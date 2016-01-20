@@ -13,39 +13,28 @@ public class Triangle extends Shape {
 	private Point2D.Double a;
 	private Point2D.Double b;
 	private Point2D.Double c;
-	private int totalVertices;
-	
+
 	/**
 	 * Basic constructor that sets all fields.
 	 * @param color the color for the new shape.
-	 * @param a the first point.
-	 * @param b the second point.
-	 * @param c the third point.
+	 * @param center the center of the new shape.
+	 * @param a the first point, relative to the center.
+	 * @param b the second point, relative to the center.
+	 * @param c the third point, relative to the center.
 	 */
-	public Triangle(Color color, Point2D.Double a, Point2D.Double b, Point2D.Double c) {
+	public Triangle(Color color, Point2D.Double center, Point2D.Double a,
+					Point2D.Double b, Point2D.Double c)
+	{
 
 		// Initialize the superclass.
-		super(color);
+		super(color, center);
 
 		// Set fields.
 		this.a = a;
 		this.b = b;
 		this.c = c;
-		this.totalVertices = 1;
 	}
 
-	public int getTotalVertices() {
-		return totalVertices;
-	}
-	
-	public void setTotalVertices(int count) {
-		this.totalVertices = count;
-	}
-	
-	public void addOneVertex() {
-		totalVertices++;
-	}
-	
 	/**
 	 * Getter for the first point.
 	 * @return the first point as a Java point.
@@ -93,4 +82,18 @@ public class Triangle extends Shape {
 	public void setC(Point2D.Double c) {
 		this.c = c;
 	}
+
+	/**
+	 * Add your code to do an intersection test
+	 * here. You shouldn't need the tolerance.
+	 * @param pt = the point to test against.
+	 * @param tolerance = the allowable tolerance.
+	 * @return true if pt is in the shape,
+	 *		   false otherwise.
+	 */
+	@Override
+	public boolean pointInShape(Point2D.Double pt, double tolerance) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 }
