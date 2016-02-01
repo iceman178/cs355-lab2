@@ -18,6 +18,34 @@ public abstract class Shape {
 	// The rotation of this shape.
 	protected double rotation;
 
+	// Added stuff --------------------------------------
+	protected type shapeType;
+	
+	// First click
+	protected Point2D.Double origin;
+	
+	public enum type {
+		CIRCLE, ELLIPSE, LINE, RECTANGLE, SQUARE, TRIANGLE, NONE
+	}
+	
+	public type getShapeType() {
+		return shapeType;
+	}
+
+	public void setShapeType(type shapeType) {
+		this.shapeType = shapeType;
+	}
+
+	public Point2D.Double getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(Point2D.Double origin) {
+		this.origin = origin;
+	}
+	
+	//--------------------------------------------------------
+	
 	/**
 	 * Basic constructor that sets fields.
 	 * It initializes rotation to 0.

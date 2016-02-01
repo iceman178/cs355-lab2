@@ -41,7 +41,7 @@ public class View implements ViewRefresher {
 		{
 			Line line = (Line)currentShape;
 			
-			Point2D.Double start = new Point2D.Double(line.getStart().x, line.getStart().y);		
+			Point2D.Double start = new Point2D.Double(line.getCenter().x, line.getCenter().y);		
 			Point2D.Double end = new Point2D.Double(line.getEnd().x, line.getEnd().y);
 			
 			return new Line2D.Double(start.x, start.y, end.x, end.y);
@@ -72,8 +72,8 @@ public class View implements ViewRefresher {
 		{
 			Rectangle rectangle = (Rectangle)currentShape;
 			
-			double x = rectangle.getUpperLeft().getX();
-			double y = rectangle.getUpperLeft().getY();
+			double x = rectangle.getCenter().getX();
+			double y = rectangle.getCenter().getY();
 			double width = rectangle.getWidth();
 			double height = rectangle.getHeight();
 			
@@ -82,8 +82,8 @@ public class View implements ViewRefresher {
 		else if (currentShape.getShapeType() == Shape.type.SQUARE)
 		{
 			Square square = (Square)currentShape;
-			double x = square.getUpperLeft().getX();
-			double y = square.getUpperLeft().getY();
+			double x = square.getCenter().getX();
+			double y = square.getCenter().getY();
 			double width = square.getSize();
 			double height = square.getSize();
 						

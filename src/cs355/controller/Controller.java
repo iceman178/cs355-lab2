@@ -28,7 +28,21 @@ public class Controller implements CS355Controller {
 			
 			if (trianglePoints.size() == 3)
 			{
+				int x1 = (int)trianglePoints.get(0).getX();
+				int x2 = (int)trianglePoints.get(1).getX();
+				int x3 = (int)trianglePoints.get(2).getX();
+				int y1 = (int)trianglePoints.get(0).getY();
+				int y2 = (int)trianglePoints.get(1).getY();
+				int y3 = (int)trianglePoints.get(2).getY();
+				
+				double centerX = (x1 + x2 + x3) / 3;
+				double centerY = (y1 + y2 + y3) / 3;
+				
+				Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
+				
+				
 				Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
+												 triCenter,
 												 trianglePoints.get(0),
 												 trianglePoints.get(1),
 												 trianglePoints.get(2));
@@ -77,8 +91,9 @@ public class Controller implements CS355Controller {
 			shapeSelected = true;
 			break;
 		case SQUARE:
-			Point2D.Double start_square = new Point2D.Double(arg0.getX(), arg0.getY());
-			Square square = new Square(Model.instance().getSelectedColor(), start_square, 0);
+			Point2D.Double origin_square = new Point2D.Double(arg0.getX(), arg0.getY());
+			Point2D.Double center_square = new Point2D.Double(arg0.getX(), arg0.getY());
+			Square square = new Square(Model.instance().getSelectedColor(), center_square, origin_square, 0);
 			square.setShapeType(Shape.type.SQUARE);
 			Model.instance().addShape(square);
 			shapeSelected = true;
@@ -152,36 +167,36 @@ public class Controller implements CS355Controller {
 	private void updateCurrentCircle(Shape currentShape, MouseEvent arg0) 
 	{
 		Circle circle = (Circle) currentShape;
-		Point2D.Double opposite_corner = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
 
-		double side_length = Math.min(Math.abs(circle.getOrigin().getX() - opposite_corner.getX()), 
-									  Math.abs(circle.getOrigin().getY() - opposite_corner.getY()));
+		double side_length = Math.min(Math.abs(circle.getCenter().getX() - current_mouse_pos.getX()), 
+									  Math.abs(circle.getCenter().getY() - current_mouse_pos.getY()));
 		circle.setRadius(side_length);
 		
 		// Left side of origin point
-		if (opposite_corner.getX() < circle.getOrigin().getX())
+		if (current_mouse_pos.getX() < circle.getCenter().getX())
 		{
 			// Above origin point
-			if (opposite_corner.getY() < circle.getOrigin().getY())
+			if (current_mouse_pos.getY() < circle.getCenter().getY())
 			{
-				circle.setCenter(new Point2D.Double(circle.getOrigin().getX() - side_length, 
-													   circle.getOrigin().getY() - side_length));
+				circle.setCenter(new Point2D.Double(circle.getCenter().getX() - side_length, 
+													   circle.getCenter().getY() - side_length));
 			}
 			else // Below origin point
 			{
-				circle.setCenter(new Point2D.Double(circle.getOrigin().getX() - side_length, circle.getOrigin().getY()));
+				circle.setCenter(new Point2D.Double(circle.getCenter().getX() - side_length, circle.getCenter().getY()));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (opposite_corner.getY() < circle.getOrigin().getY())
+			if (current_mouse_pos.getY() < circle.getCenter().getY())
 			{
-				circle.setCenter(new Point2D.Double(circle.getOrigin().getX(), circle.getOrigin().getY() - side_length));
+				circle.setCenter(new Point2D.Double(circle.getCenter().getX(), circle.getCenter().getY() - side_length));
 			}
 			else // Below origin point
 			{
-				circle.setCenter(new Point2D.Double(circle.getOrigin().getX(), circle.getOrigin().getY()));
+				circle.setCenter(new Point2D.Double(circle.getCenter().getX(), circle.getCenter().getY()));
 			}
 		}
 		Model.instance().updateLastShape(circle);
@@ -190,36 +205,36 @@ public class Controller implements CS355Controller {
 	private void updateCurrentEllipse(Shape currentShape, MouseEvent arg0) 
 	{
 		Ellipse ellipse = (Ellipse) currentShape;
-		Point2D.Double opposite_corner = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
 		
 		// Left side of origin point
-		if (opposite_corner.getX() < ellipse.getOrigin().getX())
+		if (current_mouse_pos.getX() < ellipse.getCenter().getX())
 		{
 			// Above origin point
-			if (opposite_corner.getY() < ellipse.getOrigin().getY())
+			if (current_mouse_pos.getY() < ellipse.getCenter().getY())
 			{
-				ellipse.setCenter(new Point2D.Double(opposite_corner.getX(), opposite_corner.getY()));
+				ellipse.setCenter(new Point2D.Double(current_mouse_pos.getX(), current_mouse_pos.getY()));
 			}
 			else // Below origin point
 			{
-				ellipse.setCenter(new Point2D.Double(opposite_corner.getX(), ellipse.getOrigin().getY()));
+				ellipse.setCenter(new Point2D.Double(current_mouse_pos.getX(), ellipse.getCenter().getY()));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (opposite_corner.getY() < ellipse.getOrigin().getY())
+			if (current_mouse_pos.getY() < ellipse.getCenter().getY())
 			{
-				ellipse.setCenter(new Point2D.Double(ellipse.getOrigin().getX(), opposite_corner.getY()));
+				ellipse.setCenter(new Point2D.Double(ellipse.getCenter().getX(), current_mouse_pos.getY()));
 			}
 			else // Below origin point
 			{
-				ellipse.setCenter(new Point2D.Double(ellipse.getOrigin().getX(), ellipse.getOrigin().getY()));
+				ellipse.setCenter(new Point2D.Double(ellipse.getCenter().getX(), ellipse.getCenter().getY()));
 			}
 		}
 		
-		double width = Math.abs(ellipse.getOrigin().getX() - opposite_corner.getX());
-		double height = Math.abs(ellipse.getOrigin().getY() - opposite_corner.getY());
+		double width = Math.abs(ellipse.getCenter().getX() - current_mouse_pos.getX());
+		double height = Math.abs(ellipse.getCenter().getY() - current_mouse_pos.getY());
 		
 		ellipse.setWidth(width);
 		ellipse.setHeight(height);
@@ -230,36 +245,36 @@ public class Controller implements CS355Controller {
 	private void updateCurrentRectangle(Shape currentShape, MouseEvent arg0) 
 	{
 		Rectangle rectangle = (Rectangle) currentShape;
-		Point2D.Double opposite_corner = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
 
 		// Left side of origin point
-		if (opposite_corner.getX() < rectangle.getOrigin().getX())
+		if (current_mouse_pos.getX() < rectangle.getCenter().getX())
 		{
 			// Above origin point
-			if (opposite_corner.getY() < rectangle.getOrigin().getY())
+			if (current_mouse_pos.getY() < rectangle.getCenter().getY())
 			{
-				rectangle.setUpperLeft(new Point2D.Double(opposite_corner.getX(), opposite_corner.getY()));
+				rectangle.setCenter(new Point2D.Double(current_mouse_pos.getX(), current_mouse_pos.getY()));
 			}
 			else // Below origin point
 			{
-				rectangle.setUpperLeft(new Point2D.Double(opposite_corner.getX(), rectangle.getOrigin().getY()));
+				rectangle.setCenter(new Point2D.Double(current_mouse_pos.getX(), rectangle.getCenter().getY()));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (opposite_corner.getY() < rectangle.getOrigin().getY())
+			if (current_mouse_pos.getY() < rectangle.getCenter().getY())
 			{
-				rectangle.setUpperLeft(new Point2D.Double(rectangle.getOrigin().getX(), opposite_corner.getY()));
+				rectangle.setCenter(new Point2D.Double(rectangle.getCenter().getX(), current_mouse_pos.getY()));
 			}
 			else // Below origin point
 			{
-				rectangle.setUpperLeft(new Point2D.Double(rectangle.getOrigin().getX(), rectangle.getOrigin().getY()));
+				rectangle.setCenter(new Point2D.Double(rectangle.getCenter().getX(), rectangle.getCenter().getY()));
 			}
 		}
 		
-		double width = Math.abs(rectangle.getOrigin().getX() - opposite_corner.getX());
-		double height = Math.abs(rectangle.getOrigin().getY() - opposite_corner.getY());
+		double width = Math.abs(rectangle.getCenter().getX() - current_mouse_pos.getX());
+		double height = Math.abs(rectangle.getCenter().getY() - current_mouse_pos.getY());
 		
 		rectangle.setWidth(width);
 		rectangle.setHeight(height);
@@ -270,36 +285,36 @@ public class Controller implements CS355Controller {
 	private void updateCurrentSquare(Shape currentShape, MouseEvent arg0) 
 	{
 		Square square = (Square) currentShape;
-		Point2D.Double opposite_corner = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
 
-		double side_length = Math.min(Math.abs(square.getOrigin().getX() - opposite_corner.getX()), 
-									  Math.abs(square.getOrigin().getY() - opposite_corner.getY()));
-		square.setSize(side_length);
+		double side_length = Math.min(Math.abs(square.getCenter().getX() - current_mouse_pos.getX()), 
+									  Math.abs(square.getCenter().getY() - current_mouse_pos.getY()));
+		square.setSize(side_length / 2);
 		
 		// Left side of origin point
-		if (opposite_corner.getX() < square.getOrigin().getX())
+		if (current_mouse_pos.getX() < square.getCenter().getX())
 		{
 			// Above origin point
-			if (opposite_corner.getY() < square.getOrigin().getY())
+			if (current_mouse_pos.getY() < square.getCenter().getY())
 			{
-				square.setUpperLeft(new Point2D.Double(square.getOrigin().getX() - side_length, 
-													   square.getOrigin().getY() - side_length));
+				square.setCenter(new Point2D.Double(square.getCenter().getX() - side_length, 
+													   square.getCenter().getY() - side_length));
 			}
 			else // Below origin point
 			{
-				square.setUpperLeft(new Point2D.Double(square.getOrigin().getX() - side_length, square.getOrigin().getY()));
+				square.setCenter(new Point2D.Double(square.getCenter().getX() - side_length, square.getCenter().getY()));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (opposite_corner.getY() < square.getOrigin().getY())
+			if (current_mouse_pos.getY() < square.getCenter().getY())
 			{
-				square.setUpperLeft(new Point2D.Double(square.getOrigin().getX(), square.getOrigin().getY() - side_length));
+				square.setCenter(new Point2D.Double(square.getCenter().getX(), square.getCenter().getY() - side_length));
 			}
 			else // Below origin point
 			{
-				square.setUpperLeft(new Point2D.Double(square.getOrigin().getX(), square.getOrigin().getY()));
+				square.setCenter(new Point2D.Double(square.getCenter().getX(), square.getCenter().getY()));
 			}
 		}
 		Model.instance().updateLastShape(square);
@@ -418,7 +433,6 @@ public class Controller implements CS355Controller {
 	@Override
 	public void saveDrawing(File file) 
 	{
-		System.out.println("Saving drawing");
 		Model.instance().save(file);
 		GUIFunctions.refresh();
 	}
@@ -426,14 +440,8 @@ public class Controller implements CS355Controller {
 	@Override
 	public void openDrawing(File file) 
 	{
-		System.out.println("Open drawing");
 		Model.instance().open(file);
 		GUIFunctions.refresh();
-		if (Model.get_instance() == null)
-		{
-			System.out.println("NULL");
-		}
-		System.out.println("Size=" + Model.get_instance().getShapes().size());
 	}
 
 	@Override

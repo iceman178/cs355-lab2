@@ -18,10 +18,10 @@ public class Square extends Shape {
 	 * @param center the center of the new shape.
 	 * @param size the size of the new shape.
 	 */
-	public Square(Color color, Point2D.Double center, double size) {
+	public Square(Color color, Point2D.Double center, Point2D.Double origin, double size) {
 
 		// Initialize the superclass.
-		super(color, center);
+		super(color, center, origin);
 
 		// Set the field.
 		this.size = size;
