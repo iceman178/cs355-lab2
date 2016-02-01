@@ -70,22 +70,25 @@ public class Controller implements CS355Controller {
 			shapeSelected = true;
 			break;
 		case CIRCLE:
+			Point2D.Double origin_circle = new Point2D.Double(arg0.getX(), arg0.getY());
 			Point2D.Double center_circle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Circle circle = new Circle(Model.instance().getSelectedColor(), center_circle, 0);
+			Circle circle = new Circle(Model.instance().getSelectedColor(), center_circle, origin_circle, 0);
 			circle.setShapeType(Shape.type.CIRCLE);
 			Model.instance().addShape(circle);
 			shapeSelected = true;			
 			break;
 		case ELLIPSE:
+			Point2D.Double origin_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
 			Point2D.Double center_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
-			Ellipse ellipse = new Ellipse(Model.instance().getSelectedColor(), center_ellipse, 0, 0);
+			Ellipse ellipse = new Ellipse(Model.instance().getSelectedColor(), center_ellipse, origin_ellipse, 0, 0);
 			ellipse.setShapeType(Shape.type.ELLIPSE);
 			Model.instance().addShape(ellipse);
 			shapeSelected = true;
 			break;
 		case RECTANGLE:
-			Point2D.Double start_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Rectangle rectangle = new Rectangle(Model.instance().getSelectedColor(), start_rectangle, 0, 0);
+			Point2D.Double origin_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
+			Point2D.Double center_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
+			Rectangle rectangle = new Rectangle(Model.instance().getSelectedColor(), center_rectangle, origin_rectangle, 0, 0);
 			rectangle.setShapeType(Shape.type.RECTANGLE);
 			Model.instance().addShape(rectangle);
 			shapeSelected = true;

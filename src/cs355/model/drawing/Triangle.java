@@ -22,8 +22,8 @@ public class Triangle extends Shape {
 	 * @param b the second point, relative to the center.
 	 * @param c the third point, relative to the center.
 	 */
-	public Triangle(Color color, Point2D.Double center, Point2D.Double a,
-					Point2D.Double b, Point2D.Double c)
+	public Triangle(Color color, Point2D.Double center, 
+					Point2D.Double a, Point2D.Double b, Point2D.Double c)
 	{
 
 		// Initialize the superclass.

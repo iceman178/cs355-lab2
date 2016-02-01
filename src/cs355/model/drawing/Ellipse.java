@@ -22,10 +22,10 @@ public class Ellipse extends Shape {
 	 * @param width the width of the new shape.
 	 * @param height the height of the new shape.
 	 */
-	public Ellipse(Color color, Point2D.Double center, double width, double height) {
+	public Ellipse(Color color, Point2D.Double center, Point2D.Double origin, double width, double height) {
 
 		// Initialize the superclass.
-		super(color, center);
+		super(color, center, origin);
 
 		// Set fields.
 		this.width = width;

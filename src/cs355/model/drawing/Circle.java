@@ -18,10 +18,10 @@ public class Circle extends Shape {
 	 * @param center the center of the new shape.
 	 * @param radius the radius of the new shape.
 	 */
-	public Circle(Color color, Point2D.Double center, double radius) {
+	public Circle(Color color, Point2D.Double center, Point2D.Double origin, double radius) {
 
 		// Initialize the superclass.
-		super(color, center);
+		super(color, center, origin);
 
 		// Set the field.
 		this.radius = radius;

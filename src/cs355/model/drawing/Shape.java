@@ -52,6 +52,14 @@ public abstract class Shape {
 	 * @param color the color for the new shape.
 	 * @param center the center point of the new shape.
 	 */
+	public Shape(Color color, Point2D.Double center, Point2D.Double origin) {
+		this.color = color;
+		this.center = center;
+		this.origin = origin;
+		rotation = 0.0;
+	}
+	
+	// Needed for line and triangle
 	public Shape(Color color, Point2D.Double center) {
 		this.color = color;
 		this.center = center;
