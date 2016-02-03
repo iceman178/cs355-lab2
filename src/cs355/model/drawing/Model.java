@@ -1,6 +1,7 @@
 package cs355.model.drawing;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -44,12 +45,6 @@ public class Model extends CS355Drawing {
 		shapes.remove(shapes.size() - 1);
 		shapes.add(newShape);
 	}
-	
-	//Notifies the observers
-	public void notifyObservers() {
-		super.notifyObservers();
-		System.out.println("Update Issued");
-	}
 
 	@Override
 	public Shape getShape(int index) {
@@ -67,30 +62,59 @@ public class Model extends CS355Drawing {
 		shapes.remove(index);
 	}
 
+	
+	
+	
+	// -----------------------Moving---------------------------
+	
 	@Override
 	public void moveToFront(int index) {
-		// TODO Auto-generated method stub
+		System.out.println("Model:moveToFront  " + index);
+		
 		
 	}
 
 	@Override
 	public void movetoBack(int index) {
-		// TODO Auto-generated method stub
+		System.out.println("Model:movetoBack  " + index);
 		
 	}
 
 	@Override
 	public void moveForward(int index) {
-		// TODO Auto-generated method stub
+		System.out.println("Model:moveForward  " + index);
+
 		
 	}
 
 	@Override
 	public void moveBackward(int index) {
-		// TODO Auto-generated method stub
+		System.out.println("Model:moveBackward  " + index);
 		
 	}
 
+	public int checkIfSelectedShape(Point2D.Double curClick)
+	{
+		boolean result = false;
+		int curIndex = -1;
+		
+		for(int a = 0; a < shapes.size(); a++)
+		{
+			result = shapes.get(a).pointInShape(curClick, 0);
+			
+			if (result == true)
+			{
+				curIndex = a;
+				return curIndex;
+			}
+		}
+		
+		return curIndex;
+	}
+	
+	
+	
+	
 	@Override
 	public List<Shape> getShapes() {
 		return shapes;

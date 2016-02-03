@@ -1,0 +1,76 @@
+[
+  {
+    "size": 63.0,
+    "color": {
+      "value": -16711936,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 119.5,
+      "y": 129.5
+    },
+    "rotation": 0.0,
+    "shapeType": "SQUARE",
+    "origin": {
+      "x": 88.0,
+      "y": 98.0
+    },
+    "SHAPE_TYPE": "cs355.model.drawing.Square"
+  },
+  {
+    "width": 149.0,
+    "height": 97.0,
+    "color": {
+      "value": -16711681,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 299.5,
+      "y": 129.5
+    },
+    "rotation": 0.0,
+    "shapeType": "RECTANGLE",
+    "origin": {
+      "x": 225.0,
+      "y": 81.0
+    },
+    "SHAPE_TYPE": "cs355.model.drawing.Rectangle"
+  },
+  {
+    "radius": 82.0,
+    "color": {
+      "value": -65536,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 113.0,
+      "y": 275.0
+    },
+    "rotation": 0.0,
+    "shapeType": "CIRCLE",
+    "origin": {
+      "x": 72.0,
+      "y": 234.0
+    },
+    "SHAPE_TYPE": "cs355.model.drawing.Circle"
+  },
+  {
+    "width": 151.0,
+    "height": 97.0,
+    "color": {
+      "value": -65281,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 286.5,
+      "y": 283.5
+    },
+    "rotation": 0.0,
+    "shapeType": "ELLIPSE",
+    "origin": {
+      "x": 211.0,
+      "y": 235.0
+    },
+    "SHAPE_TYPE": "cs355.model.drawing.Ellipse"
+  }
+]

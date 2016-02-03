@@ -27,36 +27,48 @@ public class Controller implements CS355Controller {
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
 	{
-		if (Model.instance().getCurrentMode() == Shape.type.TRIANGLE)
+		if (curControllerMode == Mode.SELECT)
 		{
-			Point2D.Double newPoint = new Point2D.Double(arg0.getX(), arg0.getY());
-			trianglePoints.add(newPoint);
+			Point2D.Double curClick = new Point2D.Double(arg0.getX(), arg0.getY());
+			int result = Model.instance().checkIfSelectedShape(curClick);
+			System.out.println("mouseClicked result=" + result);
 			
-			if (trianglePoints.size() == 3)
+		}
+		else
+		{
+			if (Model.instance().getCurrentMode() == Shape.type.TRIANGLE)
 			{
-				int x1 = (int)trianglePoints.get(0).getX();
-				int x2 = (int)trianglePoints.get(1).getX();
-				int x3 = (int)trianglePoints.get(2).getX();
-				int y1 = (int)trianglePoints.get(0).getY();
-				int y2 = (int)trianglePoints.get(1).getY();
-				int y3 = (int)trianglePoints.get(2).getY();
+				Point2D.Double newPoint = new Point2D.Double(arg0.getX(), arg0.getY());
+				trianglePoints.add(newPoint);
 				
-				double centerX = (x1 + x2 + x3) / 3;
-				double centerY = (y1 + y2 + y3) / 3;
-				
-				Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
-				
-				Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
-												 triCenter,
-												 trianglePoints.get(0),
-												 trianglePoints.get(1),
-												 trianglePoints.get(2));
-				triangle.setShapeType(Shape.type.TRIANGLE);
-				Model.instance().addShape(triangle);
-				resetTriangleInfo();
-				GUIFunctions.refresh();
+				if (trianglePoints.size() == 3)
+				{
+					int x1 = (int)trianglePoints.get(0).getX();
+					int x2 = (int)trianglePoints.get(1).getX();
+					int x3 = (int)trianglePoints.get(2).getX();
+					int y1 = (int)trianglePoints.get(0).getY();
+					int y2 = (int)trianglePoints.get(1).getY();
+					int y3 = (int)trianglePoints.get(2).getY();
+					
+					double centerX = (x1 + x2 + x3) / 3;
+					double centerY = (y1 + y2 + y3) / 3;
+					
+					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
+					
+					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
+													 triCenter,
+													 trianglePoints.get(0),
+													 trianglePoints.get(1),
+													 trianglePoints.get(2));
+					triangle.setShapeType(Shape.type.TRIANGLE);
+					Model.instance().addShape(triangle);
+					resetCurMode();;
+					GUIFunctions.refresh();
+				}
 			}
 		}
+		
+		
 	}
 	
 	@Override
@@ -358,15 +370,16 @@ public class Controller implements CS355Controller {
 		Model.instance().updateLastShape(square);
 	}
 	
-	public void resetTriangleInfo()
+	public void resetCurMode()
 	{
 		trianglePoints.clear();
+		curControllerMode = Mode.NONE;
 	}
 	
 	@Override
 	public void colorButtonHit(Color c) 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		if (c == null)
 		{
 			return;
@@ -378,63 +391,66 @@ public class Controller implements CS355Controller {
 	@Override
 	public void lineButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.LINE);
 	}
 
 	@Override
 	public void squareButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.SQUARE);
 	}
 
 	@Override
 	public void rectangleButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.RECTANGLE);
 	}
 
 	@Override
 	public void circleButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.CIRCLE);
 	}
 
 	@Override
 	public void ellipseButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.ELLIPSE);
 	}
 
 	@Override
 	public void triangleButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.TRIANGLE);
 	}
 
 	@Override
 	public void selectButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();
+		curControllerMode = Mode.SELECT;
 		System.out.println("Controller:selectButtonHit");
 	}
 
 	@Override
 	public void zoomInButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();
+		curControllerMode = Mode.ZOOM_IN;
 		System.out.println("Controller:zoomInButtonHit");
 	}
 
 	@Override
 	public void zoomOutButtonHit() 
 	{
-		resetTriangleInfo();
+		resetCurMode();
+		curControllerMode = Mode.ZOOM_OUT;
 		System.out.println("Controller:zoomOutButtonHit");
 	}
 
@@ -517,6 +533,30 @@ public class Controller implements CS355Controller {
 	
 	@Override
 	public void doSendtoBack() {}
+
+	public boolean isRotating() {
+		return rotating;
+	}
+
+	public void setRotating(boolean rotating) {
+		this.rotating = rotating;
+	}
+
+	public int getCurShapeIndex() {
+		return curShapeIndex;
+	}
+
+	public void setCurShapeIndex(int curShapeIndex) {
+		this.curShapeIndex = curShapeIndex;
+	}
+
+	public Mode getCurControllerMode() {
+		return curControllerMode;
+	}
+
+	public void setCurControllerMode(Mode curControllerMode) {
+		this.curControllerMode = curControllerMode;
+	}
 	
 	
 	

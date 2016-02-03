@@ -73,8 +73,12 @@ public class Ellipse extends Shape {
 	 *		   false otherwise.
 	 */
 	@Override
-	public boolean pointInShape(Point2D.Double pt, double tolerance) {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public boolean pointInShape(Point2D.Double pt, double tolerance) 
+	{
+		boolean result = false;
+		
+		
+		return result;
 	}
 
 }

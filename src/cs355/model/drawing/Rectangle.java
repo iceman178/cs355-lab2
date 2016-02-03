@@ -73,8 +73,22 @@ public class Rectangle extends Shape {
 	 *		   false otherwise.
 	 */
 	@Override
-	public boolean pointInShape(Point2D.Double pt, double tolerance) {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public boolean pointInShape(Point2D.Double pt, double tolerance) 
+	{
+		System.out.println("Pt=" + pt.getX() + "  " + pt.getY());
+		boolean result = false;
+		
+		double boundaryX = width/2;
+		double boundaryY = height/2;
+		
+		if (((pt.getX() >= center.getX() - boundaryX) && (pt.getX() <= center.getX() + boundaryX)) &&
+			((pt.getY() >= center.getY() - boundaryY) && (pt.getY() <= center.getY() + boundaryY)) )
+		{
+			System.out.println("\tRectangle selected");
+			result = true;
+		}
+	
+		return result;
 	}
 
 }

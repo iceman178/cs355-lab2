@@ -52,8 +52,20 @@ public class Square extends Shape {
 	 *		   false otherwise.
 	 */
 	@Override
-	public boolean pointInShape(Point2D.Double pt, double tolerance) {
-		throw new UnsupportedOperationException("Not supported yet.");
+	public boolean pointInShape(Point2D.Double pt, double tolerance) 
+	{
+		boolean result = false;
+		
+		double boundary = size/2;
+		
+		if (((pt.getX() >= center.getX() - boundary) && (pt.getX() <= center.getX() + boundary)) &&
+			((pt.getY() >= center.getY() - boundary) && (pt.getY() <= center.getY() + boundary)) )
+		{
+			System.out.println("\tSquare selected");
+			result = true;
+		}
+	
+		return result;
 	}
 
 }
