@@ -15,8 +15,14 @@ import cs355.model.drawing.*;
 public class Controller implements CS355Controller {
 
 	private boolean shapeSelected = false;
+	private boolean rotating = false;
+	private int curShapeIndex = -1;
 	private ArrayList<Point2D.Double> trianglePoints = new ArrayList<>();
+	private Mode curControllerMode = Mode.NONE;
 	
+	public enum Mode {
+		SHAPE, SELECT, ZOOM_IN, ZOOM_OUT, NONE
+	}
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
@@ -40,7 +46,6 @@ public class Controller implements CS355Controller {
 				
 				Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
 				
-				
 				Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
 												 triCenter,
 												 trianglePoints.get(0),
@@ -57,8 +62,6 @@ public class Controller implements CS355Controller {
 	@Override
 	public void mousePressed(MouseEvent arg0)
 	{
-		//System.out.println("Controller:mousePressed  X=" + arg0.getX() + " Y=" + arg0.getY());
-
 		switch(Model.instance().getCurrentMode())
 		{
 		case LINE:
@@ -170,77 +173,93 @@ public class Controller implements CS355Controller {
 	private void updateCurrentCircle(Shape currentShape, MouseEvent arg0) 
 	{
 		Circle circle = (Circle) currentShape;
-		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double curMousePos = new Point2D.Double(arg0.getX(), arg0.getY());
 
-		double side_length = Math.min(Math.abs(circle.getCenter().getX() - current_mouse_pos.getX()), 
-									  Math.abs(circle.getCenter().getY() - current_mouse_pos.getY()));
+		double side_length = Math.min(Math.abs(circle.getOrigin().getX() - curMousePos.getX()), 
+									  Math.abs(circle.getOrigin().getY() - curMousePos.getY()));
 		circle.setRadius(side_length);
 		
 		// Left side of origin point
-		if (current_mouse_pos.getX() < circle.getCenter().getX())
+		if (curMousePos.getX() < circle.getOrigin().getX())
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < circle.getCenter().getY())
+			if (curMousePos.getY() < circle.getOrigin().getY())
 			{
-				circle.setCenter(new Point2D.Double(circle.getCenter().getX() - side_length, 
-													   circle.getCenter().getY() - side_length));
+				double x = circle.getOrigin().getX() - side_length/2;
+				double y = circle.getOrigin().getY() - side_length/2;
+				circle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				circle.setCenter(new Point2D.Double(circle.getCenter().getX() - side_length, circle.getCenter().getY()));
+				double x = circle.getOrigin().getX() - side_length/2;
+				double y = circle.getOrigin().getY() + side_length/2;
+				circle.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < circle.getCenter().getY())
+			if (curMousePos.getY() < circle.getOrigin().getY())
 			{
-				circle.setCenter(new Point2D.Double(circle.getCenter().getX(), circle.getCenter().getY() - side_length));
+				double x = circle.getOrigin().getX() + side_length/2;
+				double y = circle.getOrigin().getY() - side_length/2;
+				circle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				circle.setCenter(new Point2D.Double(circle.getCenter().getX(), circle.getCenter().getY()));
+				double x = circle.getOrigin().getX() + side_length/2;
+				double y = circle.getOrigin().getY() + side_length/2;
+				circle.setCenter(new Point2D.Double(x, y));
 			}
 		}
+		
 		Model.instance().updateLastShape(circle);
 	}
 	
 	private void updateCurrentEllipse(Shape currentShape, MouseEvent arg0) 
 	{
 		Ellipse ellipse = (Ellipse) currentShape;
-		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double curMousePos = new Point2D.Double(arg0.getX(), arg0.getY());
+		
+		double width = Math.abs(ellipse.getOrigin().getX() - curMousePos.getX());
+		double height = Math.abs(ellipse.getOrigin().getY() - curMousePos.getY());
+		
+		ellipse.setWidth(width);
+		ellipse.setHeight(height);
 		
 		// Left side of origin point
-		if (current_mouse_pos.getX() < ellipse.getCenter().getX())
+		if (curMousePos.getX() < ellipse.getOrigin().getX())
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < ellipse.getCenter().getY())
+			if (curMousePos.getY() < ellipse.getOrigin().getY())
 			{
-				ellipse.setCenter(new Point2D.Double(current_mouse_pos.getX(), current_mouse_pos.getY()));
+				double x = ellipse.getOrigin().getX() - width/2;
+				double y = ellipse.getOrigin().getY() - height/2;
+				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				ellipse.setCenter(new Point2D.Double(current_mouse_pos.getX(), ellipse.getCenter().getY()));
+				double x = ellipse.getOrigin().getX() - width/2;
+				double y = ellipse.getOrigin().getY() + height/2;
+				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < ellipse.getCenter().getY())
+			if (curMousePos.getY() < ellipse.getOrigin().getY())
 			{
-				ellipse.setCenter(new Point2D.Double(ellipse.getCenter().getX(), current_mouse_pos.getY()));
+				double x = ellipse.getOrigin().getX() + width/2;
+				double y = ellipse.getOrigin().getY() - height/2;
+				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				ellipse.setCenter(new Point2D.Double(ellipse.getCenter().getX(), ellipse.getCenter().getY()));
+				double x = ellipse.getOrigin().getX() + width/2;
+				double y = ellipse.getOrigin().getY() + height/2;
+				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 		}
-		
-		double width = Math.abs(ellipse.getCenter().getX() - current_mouse_pos.getX());
-		double height = Math.abs(ellipse.getCenter().getY() - current_mouse_pos.getY());
-		
-		ellipse.setWidth(width);
-		ellipse.setHeight(height);
 		
 		Model.instance().updateLastShape(ellipse);
 	}
@@ -248,78 +267,94 @@ public class Controller implements CS355Controller {
 	private void updateCurrentRectangle(Shape currentShape, MouseEvent arg0) 
 	{
 		Rectangle rectangle = (Rectangle) currentShape;
-		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
-
+		Point2D.Double curMousePos = new Point2D.Double(arg0.getX(), arg0.getY());
+		
+		double width = Math.abs(rectangle.getOrigin().getX() - curMousePos.getX());
+		double height = Math.abs(rectangle.getOrigin().getY() - curMousePos.getY());
+		
+		rectangle.setWidth(width);
+		rectangle.setHeight(height);
+		
 		// Left side of origin point
-		if (current_mouse_pos.getX() < rectangle.getCenter().getX())
+		if (curMousePos.getX() < rectangle.getOrigin().getX())
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < rectangle.getCenter().getY())
+			if (curMousePos.getY() < rectangle.getOrigin().getY())
 			{
-				rectangle.setCenter(new Point2D.Double(current_mouse_pos.getX(), current_mouse_pos.getY()));
+				double x = rectangle.getOrigin().getX() - width/2;
+				double y = rectangle.getOrigin().getY() - height/2;
+				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				rectangle.setCenter(new Point2D.Double(current_mouse_pos.getX(), rectangle.getCenter().getY()));
+				double x = rectangle.getOrigin().getX() - width/2;
+				double y = rectangle.getOrigin().getY() + height/2;
+				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < rectangle.getCenter().getY())
+			if (curMousePos.getY() < rectangle.getOrigin().getY())
 			{
-				rectangle.setCenter(new Point2D.Double(rectangle.getCenter().getX(), current_mouse_pos.getY()));
+				double x = rectangle.getOrigin().getX() + width/2;
+				double y = rectangle.getOrigin().getY() - height/2;
+				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				rectangle.setCenter(new Point2D.Double(rectangle.getCenter().getX(), rectangle.getCenter().getY()));
+				double x = rectangle.getOrigin().getX() + width/2;
+				double y = rectangle.getOrigin().getY() + height/2;
+				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 		}
-		
-		double width = Math.abs(rectangle.getCenter().getX() - current_mouse_pos.getX());
-		double height = Math.abs(rectangle.getCenter().getY() - current_mouse_pos.getY());
-		
-		rectangle.setWidth(width);
-		rectangle.setHeight(height);
-		
+
 		Model.instance().updateLastShape(rectangle);		
 	}
 
 	private void updateCurrentSquare(Shape currentShape, MouseEvent arg0) 
 	{
 		Square square = (Square) currentShape;
-		Point2D.Double current_mouse_pos = new Point2D.Double(arg0.getX(), arg0.getY());
+		Point2D.Double curMousePos = new Point2D.Double(arg0.getX(), arg0.getY());
 
-		double side_length = Math.min(Math.abs(square.getCenter().getX() - current_mouse_pos.getX()), 
-									  Math.abs(square.getCenter().getY() - current_mouse_pos.getY()));
-		square.setSize(side_length / 2);
-		
+		double side_length = Math.min(Math.abs(square.getOrigin().getX() - curMousePos.getX()), 
+									  Math.abs(square.getOrigin().getY() - curMousePos.getY()));
+		square.setSize(side_length);
+
 		// Left side of origin point
-		if (current_mouse_pos.getX() < square.getCenter().getX())
+		if (curMousePos.getX() < square.getOrigin().getX())
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < square.getCenter().getY())
+			if (curMousePos.getY() < square.getOrigin().getY())
 			{
-				square.setCenter(new Point2D.Double(square.getCenter().getX() - side_length, 
-													   square.getCenter().getY() - side_length));
+				double x = square.getOrigin().getX() - side_length/2;
+				double y = square.getOrigin().getY() - side_length/2;
+				square.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				square.setCenter(new Point2D.Double(square.getCenter().getX() - side_length, square.getCenter().getY()));
+				double x = square.getOrigin().getX() - side_length/2;
+				double y = square.getOrigin().getY() + side_length/2;
+				square.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
 			// Above origin point
-			if (current_mouse_pos.getY() < square.getCenter().getY())
+			if (curMousePos.getY() < square.getOrigin().getY())
 			{
-				square.setCenter(new Point2D.Double(square.getCenter().getX(), square.getCenter().getY() - side_length));
+				double x = square.getOrigin().getX() + side_length/2;
+				double y = square.getOrigin().getY() - side_length/2;
+				square.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				square.setCenter(new Point2D.Double(square.getCenter().getX(), square.getCenter().getY()));
+				double x = square.getOrigin().getX() + side_length/2;
+				double y = square.getOrigin().getY() + side_length/2;
+				square.setCenter(new Point2D.Double(x, y));
 			}
 		}
+		
 		Model.instance().updateLastShape(square);
 	}
 	

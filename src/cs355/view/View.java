@@ -55,7 +55,7 @@ public class View implements ViewRefresher {
 			double width = circle.getRadius();
 			double height = circle.getRadius();
 						
-			return new Ellipse2D.Double(x, y, width, height);
+			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.ELLIPSE)
 		{
@@ -66,7 +66,7 @@ public class View implements ViewRefresher {
 			double width = ellipse.getWidth();
 			double height = ellipse.getHeight();
 						
-			return new Ellipse2D.Double(x, y, width, height);
+			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.RECTANGLE)
 		{
@@ -77,7 +77,7 @@ public class View implements ViewRefresher {
 			double width = rectangle.getWidth();
 			double height = rectangle.getHeight();
 			
-			return new Rectangle2D.Double(x, y, width, height);
+			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.SQUARE)
 		{
@@ -87,7 +87,7 @@ public class View implements ViewRefresher {
 			double width = square.getSize();
 			double height = square.getSize();
 						
-			return new Rectangle2D.Double(x, y, width, height);
+			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.TRIANGLE)
 		{

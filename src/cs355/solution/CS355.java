@@ -26,10 +26,10 @@ public class CS355 {
 		View the_view = new View();
 		
 		Model.instance().addObserver(the_view);
-		Model.instance().setSelectedColor(Color.WHITE);
+		Model.instance().setSelectedColor(Color.GREEN);
 		
 		GUIFunctions.createCS355Frame(the_controller, the_view);
-		GUIFunctions.changeSelectedColor(Color.WHITE);
+		GUIFunctions.changeSelectedColor(Color.GREEN);
 		GUIFunctions.refresh();	
 		
 	}
