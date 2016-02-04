@@ -1,75 +1,75 @@
 [
   {
-    "size": 63.0,
-    "color": {
-      "value": -16711936,
-      "falpha": 0.0
-    },
-    "center": {
-      "x": 119.5,
-      "y": 129.5
-    },
-    "rotation": 0.0,
-    "shapeType": "SQUARE",
-    "origin": {
-      "x": 88.0,
-      "y": 98.0
-    },
-    "SHAPE_TYPE": "cs355.model.drawing.Square"
-  },
-  {
-    "width": 149.0,
-    "height": 97.0,
+    "size": 70.0,
     "color": {
       "value": -16711681,
       "falpha": 0.0
     },
     "center": {
-      "x": 299.5,
-      "y": 129.5
+      "x": 142.0,
+      "y": 124.0
+    },
+    "rotation": 0.0,
+    "shapeType": "SQUARE",
+    "origin": {
+      "x": 107.0,
+      "y": 89.0
+    },
+    "SHAPE_TYPE": "cs355.model.drawing.Square"
+  },
+  {
+    "width": 168.0,
+    "height": 116.0,
+    "color": {
+      "value": -26368,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 328.0,
+      "y": 120.0
     },
     "rotation": 0.0,
     "shapeType": "RECTANGLE",
     "origin": {
-      "x": 225.0,
-      "y": 81.0
+      "x": 244.0,
+      "y": 62.0
     },
     "SHAPE_TYPE": "cs355.model.drawing.Rectangle"
   },
   {
-    "radius": 82.0,
+    "radius": 40.5,
     "color": {
-      "value": -65536,
+      "value": -16776961,
       "falpha": 0.0
     },
     "center": {
-      "x": 113.0,
-      "y": 275.0
+      "x": 144.5,
+      "y": 282.5
     },
     "rotation": 0.0,
     "shapeType": "CIRCLE",
     "origin": {
-      "x": 72.0,
-      "y": 234.0
+      "x": 104.0,
+      "y": 242.0
     },
     "SHAPE_TYPE": "cs355.model.drawing.Circle"
   },
   {
-    "width": 151.0,
-    "height": 97.0,
+    "width": 89.0,
+    "height": 49.0,
     "color": {
-      "value": -65281,
+      "value": -10027162,
       "falpha": 0.0
     },
     "center": {
-      "x": 286.5,
-      "y": 283.5
+      "x": 333.0,
+      "y": 283.0
     },
     "rotation": 0.0,
     "shapeType": "ELLIPSE",
     "origin": {
-      "x": 211.0,
-      "y": 235.0
+      "x": 244.0,
+      "y": 234.0
     },
     "SHAPE_TYPE": "cs355.model.drawing.Ellipse"
   }

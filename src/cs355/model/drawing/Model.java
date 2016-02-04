@@ -15,6 +15,7 @@ public class Model extends CS355Drawing {
 	private Shape.type currentMode;
 	private Color selectedColor;
 	private ArrayList<Shape> shapes;
+	private int curShapeIndex;
 	
 	//If the model had not been initialized, it will be.
 	public static Model instance() 
@@ -31,6 +32,7 @@ public class Model extends CS355Drawing {
 		selectedColor = Color.WHITE;
 		shapes = new ArrayList<Shape>();
 		currentMode = Shape.type.NONE;
+		curShapeIndex = -1;
 	}
 	
 	public Shape getLastShape() {
@@ -93,7 +95,7 @@ public class Model extends CS355Drawing {
 		
 	}
 
-	public int checkIfSelectedShape(Point2D.Double curClick)
+	public void checkIfSelectedShape(Point2D.Double curClick)
 	{
 		boolean result = false;
 		int curIndex = -1;
@@ -105,11 +107,10 @@ public class Model extends CS355Drawing {
 			if (result == true)
 			{
 				curIndex = a;
-				return curIndex;
+				break;
 			}
 		}
-		
-		return curIndex;
+		curShapeIndex = curIndex;
 	}
 	
 	
@@ -156,6 +157,14 @@ public class Model extends CS355Drawing {
 
 	public void setShapes(ArrayList<Shape> shapes) {
 		this.shapes = shapes;
+	}
+
+	public int getCurShapeIndex() {
+		return curShapeIndex;
+	}
+
+	public void setCurShapeIndex(int curShapeIndex) {
+		this.curShapeIndex = curShapeIndex;
 	}
 	
 	

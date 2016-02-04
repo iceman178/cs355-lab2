@@ -1,5 +1,6 @@
 package cs355.view;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Line2D;
@@ -24,18 +25,25 @@ public class View implements ViewRefresher {
 	public void refreshView(Graphics2D g2d) {
 		ArrayList<Shape> shapes = (ArrayList<Shape>) Model.instance().getShapes();
 		
-		for(int i = 0; i < shapes.size(); i++) {
-			Shape currentShape = shapes.get(i);
-			
+		int curShapeIndex = Model.instance().getCurShapeIndex();
+		
+		for(int a = 0; a < shapes.size(); a++) 
+		{
+			Shape currentShape = shapes.get(a);
 			g2d.setColor(currentShape.getColor());
-			g2d.fill(shapeFactory(currentShape)); //Uses the factory to determine the current shape to set the fill
-			g2d.draw(shapeFactory(currentShape)); //Uses the factory to determine the current shape to draw the image
+			
+			//Uses the factory to determine the current shape to set the fill
+			g2d.fill(shapeFactory(currentShape, g2d, false)); 
+			//Uses the factory to determine the current shape to draw the image
+			
+				g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
+			
 		}
 	}
 	
 	//Use a factory to determine what type is being dealt with
 	//TODO Needs to add logic for the rest of the shapes
-	public java.awt.Shape shapeFactory(Shape currentShape)
+	public java.awt.Shape shapeFactory(Shape currentShape, Graphics2D g2d, boolean shapeSelected)
 	{
 		if (currentShape.getShapeType() == Shape.type.LINE)
 		{
@@ -44,6 +52,13 @@ public class View implements ViewRefresher {
 			Point2D.Double start = new Point2D.Double(line.getCenter().x, line.getCenter().y);		
 			Point2D.Double end = new Point2D.Double(line.getEnd().x, line.getEnd().y);
 			
+			if(shapeSelected)
+			{
+				
+				
+				
+				
+			}
 			return new Line2D.Double(start.x, start.y, end.x, end.y);
 		}
 		else if (currentShape.getShapeType() == Shape.type.CIRCLE)
@@ -52,9 +67,16 @@ public class View implements ViewRefresher {
 						
 			double x = circle.getCenter().getX();
 			double y = circle.getCenter().getY();
-			double width = circle.getRadius();
-			double height = circle.getRadius();
-						
+			double width = circle.getRadius() * 2;
+			double height = circle.getRadius() * 2;
+			
+			if(shapeSelected)
+			{
+				g2d.setColor(new Color(153, 255, 153));
+				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
+//				g2d.drawOval(-6, (int)-diameter/2 - 15, 11, 11);
+				g2d.setColor(circle.getColor());
+			}
 			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.ELLIPSE)
@@ -63,9 +85,13 @@ public class View implements ViewRefresher {
 			
 			double x = ellipse.getCenter().getX();
 			double y = ellipse.getCenter().getY();
-			double width = ellipse.getWidth();
-			double height = ellipse.getHeight();
-						
+			double width = ellipse.getWidth() * 2;
+			double height = ellipse.getHeight() * 2;
+			
+			if(shapeSelected)
+			{
+				
+			}
 			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.RECTANGLE)
@@ -76,7 +102,10 @@ public class View implements ViewRefresher {
 			double y = rectangle.getCenter().getY();
 			double width = rectangle.getWidth();
 			double height = rectangle.getHeight();
-			
+			if(shapeSelected)
+			{
+				
+			}
 			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.SQUARE)
@@ -86,7 +115,10 @@ public class View implements ViewRefresher {
 			double y = square.getCenter().getY();
 			double width = square.getSize();
 			double height = square.getSize();
-						
+			if(shapeSelected)
+			{
+				
+			}
 			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.TRIANGLE)

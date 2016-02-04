@@ -30,9 +30,8 @@ public class Controller implements CS355Controller {
 		if (curControllerMode == Mode.SELECT)
 		{
 			Point2D.Double curClick = new Point2D.Double(arg0.getX(), arg0.getY());
-			int result = Model.instance().checkIfSelectedShape(curClick);
-			System.out.println("mouseClicked result=" + result);
-			
+			Model.instance().checkIfSelectedShape(curClick);
+			GUIFunctions.refresh();
 		}
 		else
 		{
@@ -189,7 +188,7 @@ public class Controller implements CS355Controller {
 
 		double side_length = Math.min(Math.abs(circle.getOrigin().getX() - curMousePos.getX()), 
 									  Math.abs(circle.getOrigin().getY() - curMousePos.getY()));
-		circle.setRadius(side_length);
+		circle.setRadius(side_length / 2);
 		
 		// Left side of origin point
 		if (curMousePos.getX() < circle.getOrigin().getX())
@@ -236,8 +235,8 @@ public class Controller implements CS355Controller {
 		double width = Math.abs(ellipse.getOrigin().getX() - curMousePos.getX());
 		double height = Math.abs(ellipse.getOrigin().getY() - curMousePos.getY());
 		
-		ellipse.setWidth(width);
-		ellipse.setHeight(height);
+		ellipse.setWidth(width/2);
+		ellipse.setHeight(height/2);
 		
 		// Left side of origin point
 		if (curMousePos.getX() < ellipse.getOrigin().getX())
@@ -374,6 +373,7 @@ public class Controller implements CS355Controller {
 	{
 		trianglePoints.clear();
 		curControllerMode = Mode.NONE;
+		Model.instance().setCurShapeIndex(-1);
 	}
 	
 	@Override

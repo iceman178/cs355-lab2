@@ -55,7 +55,6 @@ public class Square extends Shape {
 	public boolean pointInShape(Point2D.Double pt, double tolerance) 
 	{
 		boolean result = false;
-		
 		double boundary = size/2;
 		
 		if (((pt.getX() >= center.getX() - boundary) && (pt.getX() <= center.getX() + boundary)) &&
@@ -64,7 +63,6 @@ public class Square extends Shape {
 			System.out.println("\tSquare selected");
 			result = true;
 		}
-	
 		return result;
 	}
 

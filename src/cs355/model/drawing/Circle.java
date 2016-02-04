@@ -59,14 +59,12 @@ public class Circle extends Shape {
 		double lengthX = pt.getX() - center.getX();
 		double lengthY = pt.getY() - center.getY();	
 		double distanceFromCenter = Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2));
-		System.out.println("radius=" + radius);
-		System.out.println("distan=" + distanceFromCenter);
-		if (distanceFromCenter <= radius/2)
+		
+		if (distanceFromCenter <= radius)
 		{
 			System.out.println("\tCircle Selected");
 			result = true;
 		}
-		
 		return result;
 	}
 

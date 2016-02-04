@@ -75,9 +75,7 @@ public class Rectangle extends Shape {
 	@Override
 	public boolean pointInShape(Point2D.Double pt, double tolerance) 
 	{
-		System.out.println("Pt=" + pt.getX() + "  " + pt.getY());
 		boolean result = false;
-		
 		double boundaryX = width/2;
 		double boundaryY = height/2;
 		
@@ -87,7 +85,6 @@ public class Rectangle extends Shape {
 			System.out.println("\tRectangle selected");
 			result = true;
 		}
-	
 		return result;
 	}
 
