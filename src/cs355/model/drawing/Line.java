@@ -55,9 +55,26 @@ public class Line extends Shape {
 	public boolean pointInShape(Point2D.Double pt, double tolerance) 
 	{
 		boolean result = false;
+		tolerance = 4;
+		double x0 = pt.getX(); 
+		double y0 = pt.getY(); 
+		double x1 = center.getX(); 
+		double y1 = center.getY();
+		double x2 = end.getX(); 
+		double y2 = end.getY();
+
+		double slope = (y1-y2)/(x2-x1);
+		double tangentSlope = -1/slope;
+		double degree = Math.atan(tangentSlope);
 		
-	
-	
+		y0 += Math.sin(degree);
+		x0 += Math.cos(degree);
+		
+		if(x0 <= (Math.max(x1, x2) + tolerance) && x0 >= (Math.min(x1, x2)-tolerance) && y0 <= (Math.max(y1, y2)+tolerance) && y0 >= (Math.min(y1, y2)-tolerance))
+		{
+			System.out.println("\tLine selected");
+			result = true;
+		}
 		return result;
 	}
 

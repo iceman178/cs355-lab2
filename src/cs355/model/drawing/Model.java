@@ -1,8 +1,10 @@
 package cs355.model.drawing;
 
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -39,10 +41,6 @@ public class Model extends CS355Drawing {
 		return shapes.get(shapes.size() - 1);
 	}
 	
-	public void updateShape(int index) {
-		// TODO need to be able to update any shape
-	}
-	
 	public void updateLastShape(Shape newShape) {
 		shapes.remove(shapes.size() - 1);
 		shapes.add(newShape);
@@ -53,7 +51,10 @@ public class Model extends CS355Drawing {
 		shapes.get(curShapeIndex).setColor(c);		
 	}
 	
-	
+	public void updateShapeByIndex(int index, Shape newShape) {
+		shapes.remove(index);
+		shapes.add(index, newShape);
+	}
 
 	@Override
 	public Shape getShape(int index) {
@@ -141,22 +142,100 @@ public class Model extends CS355Drawing {
 		}
 		return curShapeIndex;
 	}
+	
+	public boolean mousePressedInRotHandle (Point2D.Double pt, double tolerance)
+	{
+		if(curShapeIndex == -1) {
+			return false;
+		}
+		
+		// Gets currently selected shape
+		Shape shape = shapes.get(curShapeIndex);
+		double height = -1;
+		switch(shape.getShapeType())
+		{
+			case ELLIPSE:
+				height = ((Ellipse)shape).getHeight();
+				break;
+			case RECTANGLE:
+				height = ((Rectangle)shape).getHeight();
+				break;
+			case CIRCLE:
+				height = 2*((Circle)shape).getRadius();
+				break;
+			case SQUARE:
+				height = ((Square)shape).getSize();
+				break;
+			default:
+				break;
+		}
+		if(height!=-1)
+		{
+			Point2D.Double ptCopy = new Point2D.Double(pt.getX(), pt.getY());
+			AffineTransform worldToObj = new AffineTransform();
+			worldToObj.rotate(-shape.getRotation());
+			worldToObj.translate(-shape.getCenter().getX(),-shape.getCenter().getY());
+			worldToObj.transform(ptCopy, ptCopy);
+			double yDiff = ptCopy.getY()+((height/2) + 9);
+			
+			double distance = Math.sqrt(Math.pow(ptCopy.getX(), 2) + Math.pow(yDiff, 2));
+			return (distance <= 6);
+		}
+		if(shape.getShapeType().equals(Shape.type.TRIANGLE))
+		{
+			Point2D.Double ptCopy = new Point2D.Double(pt.getX(), pt.getY());
+			AffineTransform worldToObj = new AffineTransform();
+			worldToObj.rotate(-shape.getRotation());
+			worldToObj.translate(-shape.getCenter().getX(),-shape.getCenter().getY());
+			worldToObj.transform(ptCopy, ptCopy); //transform pt to object coordinates
+			
+			Triangle triangle = (Triangle)shape;
+			double ax = triangle.getA().getX()-triangle.getCenter().getX();
+			double bx = triangle.getB().getX()-triangle.getCenter().getX();
+			double cx = triangle.getC().getX()-triangle.getCenter().getX();
+			
+			double ay = triangle.getA().getY()-triangle.getCenter().getY();
+			double by = triangle.getB().getY()-triangle.getCenter().getY();
+			double cy = triangle.getC().getY()-triangle.getCenter().getY();
+			
+			double distance = 7;
+			if(ay <= by && ay <= cy)
+			{
+				distance = Math.sqrt(Math.pow(ax-ptCopy.getX(), 2) + Math.pow(ay-ptCopy.getY()-9, 2));
+			}
+			else if(by <= ay && by <= cy)
+			{
+				distance = Math.sqrt(Math.pow(bx-ptCopy.getX(), 2) + Math.pow(by-ptCopy.getY()-9, 2));
+			}
+			else if(cy <= by && cy <= ay)
+			{
+				distance = Math.sqrt(Math.pow(cx-ptCopy.getX(), 2) + Math.pow(cy-ptCopy.getY()-9, 2));
+			}
+			return (6>=distance); 
+		}
+		return false;
+	}
 
+	
+	//------------------GETTERS AND SETTERS---------------------------
+
+	@Override
+	public List<Shape> getShapesReversed() {
+		ArrayList<Shape> backwards = new ArrayList<Shape>(shapes);
+		Collections.reverse(backwards);
+		return backwards;
+	}
+	
 	@Override
 	public List<Shape> getShapes() {
 		return shapes;
 	}
-
-	@Override
-	public List<Shape> getShapesReversed() {
-		return shapes;
-	}
-
 	@Override
 	public void setShapes(List<Shape> shapes) {
 		this.shapes = (ArrayList<Shape>) shapes;
 	}
 	
+
 	public static Model get_instance() {
 		return _instance;
 	}
@@ -180,7 +259,7 @@ public class Model extends CS355Drawing {
 	public void setSelectedColor(Color selectedColor) {
 		this.selectedColor = selectedColor;
 	}
-
+	
 	public void setShapes(ArrayList<Shape> shapes) {
 		this.shapes = shapes;
 	}

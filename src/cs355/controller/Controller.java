@@ -17,6 +17,7 @@ public class Controller implements CS355Controller {
 	private boolean shapeSelected = false;
 	private boolean rotating = false;
 	private int curShapeIndex = -1;
+	private Point2D.Double mouseDragStart = null;
 	private ArrayList<Point2D.Double> trianglePoints = new ArrayList<>();
 	private Mode curControllerMode = Mode.NONE;
 	
@@ -24,9 +25,9 @@ public class Controller implements CS355Controller {
 		SHAPE, SELECT, ZOOM_IN, ZOOM_OUT, NONE
 	}
 	
-	private double calculateCenterTriangle(double coord1, double coord2, double coord3) {
-		return ((coord1 + coord2 + coord3) / 3);
-	}
+//	private double calculateCenterTriangle(double coord1, double coord2, double coord3) {
+//		return ((coord1 + coord2 + coord3) / 3);
+//	}
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
@@ -46,31 +47,17 @@ public class Controller implements CS355Controller {
 				
 				if (trianglePoints.size() == 3)
 				{
-					Point2D.Double point1 = new Point2D.Double(this.trianglePoints.get(0).getX(), this.trianglePoints.get(0).getY());
-					Point2D.Double point2 = new Point2D.Double(this.trianglePoints.get(1).getX(), this.trianglePoints.get(1).getY());
-					Point2D.Double point3 = new Point2D.Double(this.trianglePoints.get(2).getX(), this.trianglePoints.get(2).getY());
-									
-					Point2D.Double center = new Point2D.Double(this.calculateCenterTriangle(point1.getX(), point2.getX(), point3.getX()),
-							this.calculateCenterTriangle(point1.getY(), point2.getY(), point3.getY()));
+					Point2D.Double p1 = new Point2D.Double(trianglePoints.get(0).getX(), trianglePoints.get(0).getY());
+					Point2D.Double p2 = new Point2D.Double(trianglePoints.get(1).getX(), trianglePoints.get(1).getY());
+					Point2D.Double p3 = new Point2D.Double(trianglePoints.get(2).getX(), trianglePoints.get(2).getY());
 					
-					Triangle triangle = new Triangle(Model.instance().getSelectedColor(), center, point1, point2, point3);
-					//Model.instance().addShape(triangle);
-					//this.trianglePoints.clear();
-					//Model.instance().changeMade();
-//					Point2D.Double p1 = new Point2D.Double(trianglePoints.get(0).getX(), trianglePoints.get(0).getY());
-//					Point2D.Double p2 = new Point2D.Double(trianglePoints.get(1).getX(), trianglePoints.get(1).getY());
-//					Point2D.Double p3 = new Point2D.Double(trianglePoints.get(2).getX(), trianglePoints.get(2).getY());
-//					
-//					double centerX = (p1.getX() + p2.getX() + p3.getX()) / 3;
-//					double centerY = (p1.getY() + p2.getY() + p3.getY()) / 3;
-//					
-//					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
-//					
-//					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
-//													 triCenter,
-//													 p1,
-//													 p2,
-//													 p3);
+					double centerX = (p1.getX() + p2.getX() + p3.getX()) / 3;
+					double centerY = (p1.getY() + p2.getY() + p3.getY()) / 3;
+					
+					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
+					
+					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
+													 triCenter, p1, p2, p3);
 					Model.instance().addShape(triangle);
 					resetCurMode();;
 					GUIFunctions.refresh();
@@ -131,8 +118,20 @@ public class Controller implements CS355Controller {
 		}
 		else if(curControllerMode == Mode.SELECT)
 		{
-			// TODO
-			// Not sure yet 
+			boolean result = false;
+			result = Model.instance().mousePressedInRotHandle(new Point2D.Double(arg0.getX(), arg0.getY()), 5);
+			if (result)
+			{
+				rotating = true;
+			}
+			else
+			{
+				curShapeIndex = Model.instance().checkIfSelectedShape(new Point2D.Double(arg0.getX(), arg0.getY()));
+				if (curShapeIndex != -1)
+				{
+					mouseDragStart = new Point2D.Double(arg0.getX(), arg0.getY());
+				}
+			}
 		}
 		
 	}
@@ -181,19 +180,71 @@ public class Controller implements CS355Controller {
 			}
 			GUIFunctions.refresh();
 		}
-		else if(curControllerMode == Mode.SELECT)
+		else if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
 		{
+			if(rotating) {
+				rotateShape(curShapeIndex, arg0);
+			}
+			else {
+				Shape.type type = Model.instance().getShape(curShapeIndex).getShapeType();
+				
+				switch(type) {
+				case LINE:
+					this.handleLineTransformation(arg0);
+					break;
+				case SQUARE:
+				case RECTANGLE:
+				case CIRCLE:
+				case ELLIPSE:
+					this.handleShapeTransformation(arg0);
+					break;
+				case TRIANGLE:
+					this.handleTriangleTransformation(arg0);
+					break;
+				case NONE:
+					break;
+				default:
+					break;
+				}
+			}
+			GUIFunctions.refresh();
+			
+			
+			
 			
 		}
 		
 	}
 
-	@Override
-	public void mouseMoved(MouseEvent arg0) {}
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
+	public void handleLineTransformation(MouseEvent arg0) 
+	{
+		
+	}
+
+	public void handleShapeTransformation(MouseEvent arg0) 
+	{
+		Shape shape = Model.instance().getShape(curShapeIndex);
+		double changeX = arg0.getX() - mouseDragStart.getX();
+		double changeY = arg0.getY() - mouseDragStart.getY();
+		shape.setCenter(new Point2D.Double(mouseDragStart.x + changeX, mouseDragStart.y + changeY));
+		Model.instance().updateShapeByIndex(curShapeIndex, shape);
+	}
+	
+	public void handleTriangleTransformation(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void rotateShape(int shapeIndex, MouseEvent arg0)
+	{
+		Shape shape = Model.instance().getShape(shapeIndex);
+		double deltaX = shape.getCenter().getX() - arg0.getX();
+		double deltaY = shape.getCenter().getY() - arg0.getY();
+		double angle = Math.atan2(deltaY, deltaX) - Math.PI / 2;
+		shape.setRotation(angle % (2*Math.PI));
+		GUIFunctions.refresh();
+	}
 	
 	private void updateCurrentLine(Shape currentShape, MouseEvent arg0) 
 	{
@@ -505,24 +556,6 @@ public class Controller implements CS355Controller {
 	}
 
 	@Override
-	public void openScene(File file) {}
-
-	@Override
-	public void toggle3DModelDisplay() {}
-
-	@Override
-	public void keyPressed(Iterator<Integer> iterator) {}
-
-	@Override
-	public void openImage(File file) {} 
-
-	@Override
-	public void saveImage(File file) {}
-
-	@Override
-	public void toggleBackgroundDisplay() {}
-
-	@Override
 	public void saveDrawing(File file) 
 	{
 		Model.instance().save(file);
@@ -545,27 +578,6 @@ public class Controller implements CS355Controller {
 		}
 		GUIFunctions.refresh();
 	}
-
-	@Override
-	public void doEdgeDetection() {}
-
-	@Override
-	public void doSharpen() {}
-
-	@Override
-	public void doMedianBlur() {}
-
-	@Override
-	public void doUniformBlur() {}
-
-	@Override
-	public void doGrayscale() {}
-
-	@Override
-	public void doChangeContrast(int contrastAmountNum) {}
-	
-	@Override
-	public void doChangeBrightness(int brightnessAmountNum) {}
 	
 	@Override
 	public void doMoveForward() {
@@ -606,7 +618,59 @@ public class Controller implements CS355Controller {
 		}
 		GUIFunctions.refresh();
 	}
+	
+	// TODO LATER ON
+	@Override
+	public void mouseMoved(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+	
+	@Override
+	public void openScene(File file) {}
 
+	@Override
+	public void toggle3DModelDisplay() {}
+
+	@Override
+	public void keyPressed(Iterator<Integer> iterator) {}
+
+	@Override
+	public void openImage(File file) {} 
+
+	@Override
+	public void saveImage(File file) {}
+
+	@Override
+	public void toggleBackgroundDisplay() {}
+	
+	@Override
+	public void doEdgeDetection() {}
+
+	@Override
+	public void doSharpen() {}
+
+	@Override
+	public void doMedianBlur() {}
+
+	@Override
+	public void doUniformBlur() {}
+
+	@Override
+	public void doGrayscale() {}
+
+	@Override
+	public void doChangeContrast(int contrastAmountNum) {}
+	
+	@Override
+	public void doChangeBrightness(int brightnessAmountNum) {}
+	
+	
+	//------------------------GETTERS AND SETTERS---------------------------
+	
 	public boolean isRotating() {
 		return rotating;
 	}
