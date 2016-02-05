@@ -36,7 +36,7 @@ public class View implements ViewRefresher {
 			g2d.fill(shapeFactory(currentShape, g2d, false)); 
 			//Uses the factory to determine the current shape to draw the image
 			
-				g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
+			g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
 			
 		}
 	}
@@ -54,10 +54,10 @@ public class View implements ViewRefresher {
 			
 			if(shapeSelected)
 			{
-				
-				
-				
-				
+				g2d.setColor(new Color(204, 0, 204));
+				g2d.drawOval((int)start.getX(), (int)start.getY(), 10, 10);
+				g2d.drawOval((int)end.getX(), (int)end.getY(), 10, 10);
+				g2d.setColor(line.getColor());
 			}
 			return new Line2D.Double(start.x, start.y, end.x, end.y);
 		}
@@ -72,9 +72,9 @@ public class View implements ViewRefresher {
 			
 			if(shapeSelected)
 			{
-				g2d.setColor(new Color(153, 255, 153));
+				g2d.setColor(new Color(204, 0, 204));
 				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
-//				g2d.drawOval(-6, (int)-diameter/2 - 15, 11, 11);
+				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
 				g2d.setColor(circle.getColor());
 			}
 			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
@@ -90,7 +90,10 @@ public class View implements ViewRefresher {
 			
 			if(shapeSelected)
 			{
-				
+				g2d.setColor(new Color(204, 0, 204));
+				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.setColor(ellipse.getColor());
 			}
 			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
 		}
@@ -104,7 +107,10 @@ public class View implements ViewRefresher {
 			double height = rectangle.getHeight();
 			if(shapeSelected)
 			{
-				
+				g2d.setColor(new Color(204, 0, 204));
+				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.setColor(rectangle.getColor());
 			}
 			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
@@ -117,7 +123,10 @@ public class View implements ViewRefresher {
 			double height = square.getSize();
 			if(shapeSelected)
 			{
-				
+				g2d.setColor(new Color(204, 0, 204));
+				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.setColor(square.getColor());
 			}
 			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
 		}
@@ -128,13 +137,13 @@ public class View implements ViewRefresher {
 			int[] x = new int[3];
 			int[] y = new int[3];
 			
-			x[0] = (int)triangle.getA().getX();
-			x[1] = (int)triangle.getB().getX();
-			x[2] = (int)triangle.getC().getX();
+			x[0] = (int) (triangle.getA().x);// - triangle.getCenter().x);
+			x[1] = (int) (triangle.getB().x);// - triangle.getCenter().x);
+			x[2] = (int) (triangle.getC().x);// - triangle.getCenter().x);
 			
-			y[0] = (int)triangle.getA().getY();
-			y[1] = (int)triangle.getB().getY();
-			y[2] = (int)triangle.getC().getY();
+			y[0] = (int) (triangle.getA().y);// - triangle.getCenter().y);
+			y[1] = (int) (triangle.getB().y);// - triangle.getCenter().y);
+			y[2] = (int) (triangle.getC().y);// - triangle.getCenter().y);
 			
 			Polygon tri = new Polygon();
 			
@@ -142,6 +151,19 @@ public class View implements ViewRefresher {
 			tri.addPoint(x[1], y[1]);
 			tri.addPoint(x[2], y[2]);
 			
+			if(shapeSelected)
+			{
+				g2d.setColor(new Color(204, 0, 204));
+//				g2d.drawOval((int)(x[0] - 5), (int)y[0] - 15, 10, 10);
+//				g2d.setColor(triangle.getColor());
+				g2d.draw(tri);
+				if(y[0] <= y[1] && y[0] <= y[2])
+					g2d.drawOval(x[0]-6, y[0] - 15, 11, 11);
+				else if(y[1] <= y[0] && y[1] <= y[2])
+					g2d.drawOval(x[1]-6, y[1] - 15, 11, 11);
+				else if(y[2] <= y[1] && y[2] <= y[0])
+					g2d.drawOval(x[2]-6, y[2] - 15, 11, 11);
+			}
 			return tri;
 		}
 		

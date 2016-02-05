@@ -26,7 +26,7 @@ public class Rectangle extends Shape {
 
 		// Initialize the superclass.
 		super(color, center, origin);
-
+		this.setShapeType(Shape.type.RECTANGLE);
 		// Set fields.
 		this.width = width;
 		this.height = height;

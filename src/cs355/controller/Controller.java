@@ -24,13 +24,17 @@ public class Controller implements CS355Controller {
 		SHAPE, SELECT, ZOOM_IN, ZOOM_OUT, NONE
 	}
 	
+	private double calculateCenterTriangle(double coord1, double coord2, double coord3) {
+		return ((coord1 + coord2 + coord3) / 3);
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
 	{
 		if (curControllerMode == Mode.SELECT)
 		{
 			Point2D.Double curClick = new Point2D.Double(arg0.getX(), arg0.getY());
-			Model.instance().checkIfSelectedShape(curClick);
+			curShapeIndex = Model.instance().checkIfSelectedShape(curClick);
 			GUIFunctions.refresh();
 		}
 		else
@@ -42,24 +46,31 @@ public class Controller implements CS355Controller {
 				
 				if (trianglePoints.size() == 3)
 				{
-					int x1 = (int)trianglePoints.get(0).getX();
-					int x2 = (int)trianglePoints.get(1).getX();
-					int x3 = (int)trianglePoints.get(2).getX();
-					int y1 = (int)trianglePoints.get(0).getY();
-					int y2 = (int)trianglePoints.get(1).getY();
-					int y3 = (int)trianglePoints.get(2).getY();
+					Point2D.Double point1 = new Point2D.Double(this.trianglePoints.get(0).getX(), this.trianglePoints.get(0).getY());
+					Point2D.Double point2 = new Point2D.Double(this.trianglePoints.get(1).getX(), this.trianglePoints.get(1).getY());
+					Point2D.Double point3 = new Point2D.Double(this.trianglePoints.get(2).getX(), this.trianglePoints.get(2).getY());
+									
+					Point2D.Double center = new Point2D.Double(this.calculateCenterTriangle(point1.getX(), point2.getX(), point3.getX()),
+							this.calculateCenterTriangle(point1.getY(), point2.getY(), point3.getY()));
 					
-					double centerX = (x1 + x2 + x3) / 3;
-					double centerY = (y1 + y2 + y3) / 3;
-					
-					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
-					
-					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
-													 triCenter,
-													 trianglePoints.get(0),
-													 trianglePoints.get(1),
-													 trianglePoints.get(2));
-					triangle.setShapeType(Shape.type.TRIANGLE);
+					Triangle triangle = new Triangle(Model.instance().getSelectedColor(), center, point1, point2, point3);
+					//Model.instance().addShape(triangle);
+					//this.trianglePoints.clear();
+					//Model.instance().changeMade();
+//					Point2D.Double p1 = new Point2D.Double(trianglePoints.get(0).getX(), trianglePoints.get(0).getY());
+//					Point2D.Double p2 = new Point2D.Double(trianglePoints.get(1).getX(), trianglePoints.get(1).getY());
+//					Point2D.Double p3 = new Point2D.Double(trianglePoints.get(2).getX(), trianglePoints.get(2).getY());
+//					
+//					double centerX = (p1.getX() + p2.getX() + p3.getX()) / 3;
+//					double centerY = (p1.getY() + p2.getY() + p3.getY()) / 3;
+//					
+//					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
+//					
+//					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
+//													 triCenter,
+//													 p1,
+//													 p2,
+//													 p3);
 					Model.instance().addShape(triangle);
 					resetCurMode();;
 					GUIFunctions.refresh();
@@ -73,53 +84,57 @@ public class Controller implements CS355Controller {
 	@Override
 	public void mousePressed(MouseEvent arg0)
 	{
-		switch(Model.instance().getCurrentMode())
+		if(curControllerMode == Mode.SHAPE)
 		{
-		case LINE:
-			Point2D.Double start_line = new Point2D.Double(arg0.getX(), arg0.getY());		
-			Point2D.Double end_line = new Point2D.Double(arg0.getX(), arg0.getY());
-			Line line = new Line(Model.instance().getSelectedColor(), start_line, end_line);
-			line.setShapeType(Shape.type.LINE);
-			Model.instance().addShape(line);
-			shapeSelected = true;
-			break;
-		case CIRCLE:
-			Point2D.Double origin_circle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Point2D.Double center_circle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Circle circle = new Circle(Model.instance().getSelectedColor(), center_circle, origin_circle, 0);
-			circle.setShapeType(Shape.type.CIRCLE);
-			Model.instance().addShape(circle);
-			shapeSelected = true;			
-			break;
-		case ELLIPSE:
-			Point2D.Double origin_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
-			Point2D.Double center_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
-			Ellipse ellipse = new Ellipse(Model.instance().getSelectedColor(), center_ellipse, origin_ellipse, 0, 0);
-			ellipse.setShapeType(Shape.type.ELLIPSE);
-			Model.instance().addShape(ellipse);
-			shapeSelected = true;
-			break;
-		case RECTANGLE:
-			Point2D.Double origin_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Point2D.Double center_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
-			Rectangle rectangle = new Rectangle(Model.instance().getSelectedColor(), center_rectangle, origin_rectangle, 0, 0);
-			rectangle.setShapeType(Shape.type.RECTANGLE);
-			Model.instance().addShape(rectangle);
-			shapeSelected = true;
-			break;
-		case SQUARE:
-			Point2D.Double origin_square = new Point2D.Double(arg0.getX(), arg0.getY());
-			Point2D.Double center_square = new Point2D.Double(arg0.getX(), arg0.getY());
-			Square square = new Square(Model.instance().getSelectedColor(), center_square, origin_square, 0);
-			square.setShapeType(Shape.type.SQUARE);
-			Model.instance().addShape(square);
-			shapeSelected = true;
-			break;
-		case TRIANGLE:	
-			break;
-		default:
-			break;
+			switch(Model.instance().getCurrentMode())
+			{
+			case LINE:
+				Point2D.Double start_line = new Point2D.Double(arg0.getX(), arg0.getY());		
+				Point2D.Double end_line = new Point2D.Double(arg0.getX(), arg0.getY());
+				Line line = new Line(Model.instance().getSelectedColor(), start_line, end_line);
+				Model.instance().addShape(line);
+				shapeSelected = true;
+				break;
+			case CIRCLE:
+				Point2D.Double origin_circle = new Point2D.Double(arg0.getX(), arg0.getY());
+				Point2D.Double center_circle = new Point2D.Double(arg0.getX(), arg0.getY());
+				Circle circle = new Circle(Model.instance().getSelectedColor(), center_circle, origin_circle, 0);
+				Model.instance().addShape(circle);
+				shapeSelected = true;			
+				break;
+			case ELLIPSE:
+				Point2D.Double origin_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
+				Point2D.Double center_ellipse = new Point2D.Double(arg0.getX(), arg0.getY());
+				Ellipse ellipse = new Ellipse(Model.instance().getSelectedColor(), center_ellipse, origin_ellipse, 0, 0);
+				Model.instance().addShape(ellipse);
+				shapeSelected = true;
+				break;
+			case RECTANGLE:
+				Point2D.Double origin_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
+				Point2D.Double center_rectangle = new Point2D.Double(arg0.getX(), arg0.getY());
+				Rectangle rectangle = new Rectangle(Model.instance().getSelectedColor(), center_rectangle, origin_rectangle, 0, 0);
+				Model.instance().addShape(rectangle);
+				shapeSelected = true;
+				break;
+			case SQUARE:
+				Point2D.Double origin_square = new Point2D.Double(arg0.getX(), arg0.getY());
+				Point2D.Double center_square = new Point2D.Double(arg0.getX(), arg0.getY());
+				Square square = new Square(Model.instance().getSelectedColor(), center_square, origin_square, 0);
+				Model.instance().addShape(square);
+				shapeSelected = true;
+				break;
+			case TRIANGLE:	
+				break;
+			default:
+				break;
+			}
 		}
+		else if(curControllerMode == Mode.SELECT)
+		{
+			// TODO
+			// Not sure yet 
+		}
+		
 	}
 
 	@Override
@@ -131,38 +146,46 @@ public class Controller implements CS355Controller {
 	@Override
 	public void mouseDragged(MouseEvent arg0) 
 	{
-		if(shapeSelected) 
+		if (curControllerMode == Mode.SHAPE)
 		{
-			Shape currentShape = Model.instance().getLastShape();
-			if (currentShape == null)
+			if(shapeSelected) 
 			{
-				System.out.println("currentShape is null");
-				return;
+				Shape currentShape = Model.instance().getLastShape();
+				if (currentShape == null)
+				{
+					System.out.println("currentShape is null");
+					return;
+				}
+				switch(currentShape.getShapeType())
+				{
+				case LINE:
+					updateCurrentLine(currentShape, arg0);
+					break;
+				case CIRCLE:
+					updateCurrentCircle(currentShape, arg0);		
+					break;
+				case ELLIPSE:
+					updateCurrentEllipse(currentShape, arg0);
+					break;
+				case RECTANGLE:
+					updateCurrentRectangle(currentShape, arg0);
+					break;
+				case SQUARE:
+					updateCurrentSquare(currentShape, arg0);
+					break;
+				case TRIANGLE:	
+					break;
+				default:
+					break;
+				}
 			}
-			switch(currentShape.getShapeType())
-			{
-			case LINE:
-				updateCurrentLine(currentShape, arg0);
-				break;
-			case CIRCLE:
-				updateCurrentCircle(currentShape, arg0);		
-				break;
-			case ELLIPSE:
-				updateCurrentEllipse(currentShape, arg0);
-				break;
-			case RECTANGLE:
-				updateCurrentRectangle(currentShape, arg0);
-				break;
-			case SQUARE:
-				updateCurrentSquare(currentShape, arg0);
-				break;
-			case TRIANGLE:	
-				break;
-			default:
-				break;
-			}
+			GUIFunctions.refresh();
 		}
-		GUIFunctions.refresh();
+		else if(curControllerMode == Mode.SELECT)
+		{
+			
+		}
+		
 	}
 
 	@Override
@@ -285,7 +308,7 @@ public class Controller implements CS355Controller {
 		
 		rectangle.setWidth(width);
 		rectangle.setHeight(height);
-		
+
 		// Left side of origin point
 		if (curMousePos.getX() < rectangle.getOrigin().getX())
 		{
@@ -374,18 +397,27 @@ public class Controller implements CS355Controller {
 		trianglePoints.clear();
 		curControllerMode = Mode.NONE;
 		Model.instance().setCurShapeIndex(-1);
+		curShapeIndex = -1;
+		GUIFunctions.refresh();
 	}
 	
 	@Override
 	public void colorButtonHit(Color c) 
 	{
-		resetCurMode();;
 		if (c == null)
 		{
 			return;
 		}
-		Model.instance().setSelectedColor(c);
-		GUIFunctions.changeSelectedColor(c);
+		if (curControllerMode == Mode.SELECT)
+		{
+			Model.instance().updateColor(c);
+		}
+		else
+		{
+			Model.instance().setSelectedColor(c);
+			GUIFunctions.changeSelectedColor(c);
+		}
+		GUIFunctions.refresh();
 	}
 
 	@Override
@@ -393,6 +425,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.LINE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -400,6 +433,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.SQUARE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -407,6 +441,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.RECTANGLE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -414,6 +449,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.CIRCLE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -421,6 +457,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.ELLIPSE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -428,6 +465,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();;
 		Model.instance().setCurrentMode(Shape.type.TRIANGLE);
+		curControllerMode = Mode.SHAPE;
 	}
 
 	@Override
@@ -476,7 +514,7 @@ public class Controller implements CS355Controller {
 	public void keyPressed(Iterator<Integer> iterator) {}
 
 	@Override
-	public void openImage(File file) {}
+	public void openImage(File file) {} 
 
 	@Override
 	public void saveImage(File file) {}
@@ -499,7 +537,14 @@ public class Controller implements CS355Controller {
 	}
 
 	@Override
-	public void doDeleteShape() {}
+	public void doDeleteShape() {
+		if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			Model.instance().deleteShape(curShapeIndex);
+			curShapeIndex = Model.get_instance().getCurShapeIndex();
+		}
+		GUIFunctions.refresh();
+	}
 
 	@Override
 	public void doEdgeDetection() {}
@@ -523,16 +568,44 @@ public class Controller implements CS355Controller {
 	public void doChangeBrightness(int brightnessAmountNum) {}
 	
 	@Override
-	public void doMoveForward() {}
+	public void doMoveForward() {
+		if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			Model.instance().moveForward(curShapeIndex);
+			curShapeIndex = Model.get_instance().getCurShapeIndex();
+		}
+		GUIFunctions.refresh();
+	}
 	
 	@Override
-	public void doMoveBackward() {}
+	public void doMoveBackward() {
+		if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			Model.instance().moveBackward(curShapeIndex);
+			curShapeIndex = Model.get_instance().getCurShapeIndex();
+		}
+		GUIFunctions.refresh();
+	}
 	
 	@Override
-	public void doSendToFront() {}
+	public void doSendToFront() {
+		if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			Model.instance().moveToFront(curShapeIndex);
+			curShapeIndex = Model.get_instance().getCurShapeIndex();
+		}
+		GUIFunctions.refresh();
+	}
 	
 	@Override
-	public void doSendtoBack() {}
+	public void doSendtoBack() {
+		if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			Model.instance().movetoBack(curShapeIndex);
+			curShapeIndex = Model.get_instance().getCurShapeIndex();
+		}
+		GUIFunctions.refresh();
+	}
 
 	public boolean isRotating() {
 		return rotating;

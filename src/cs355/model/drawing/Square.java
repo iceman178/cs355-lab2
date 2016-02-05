@@ -22,7 +22,7 @@ public class Square extends Shape {
 
 		// Initialize the superclass.
 		super(color, center, origin);
-
+		this.setShapeType(Shape.type.SQUARE);
 		// Set the field.
 		this.size = size;
 	}

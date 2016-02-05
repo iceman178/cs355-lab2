@@ -28,7 +28,7 @@ public class Triangle extends Shape {
 
 		// Initialize the superclass.
 		super(color, center);
-
+		this.setShapeType(Shape.type.TRIANGLE);
 		// Set fields.
 		this.a = a;
 		this.b = b;
@@ -94,12 +94,38 @@ public class Triangle extends Shape {
 	@Override
 	public boolean pointInShape(Point2D.Double pt, double tolerance) 
 	{
+		System.out.println("Triangle check");
 		boolean result = false;
-	
-	
-	
-	
+		
+		double ax = a.getX();// - center.getX();
+		double bx = b.getX();// - center.getX();
+		double cx = c.getX();// - center.getX();
+		double x = pt.getX();
+		
+		double ay = a.getY();// - center.getY();
+		double by = b.getY();// - center.getY();
+		double cy = c.getY();// - center.getY();
+		double y = pt.getY();
+		
+		double area = Math.abs((ax*(by-cy) + bx*(cy-ay) + cx*(ay-by))/2);
+		
+		double area1 = Math.abs((x*(by-cy) + bx*(cy-y) + cx*(y-by))/2);
+		double area2 = Math.abs((ax*(y-cy) + x*(cy-ay) + cx*(ay-y))/2);
+		double area3 = Math.abs((ax*(by-y) + bx*(y-ay) + x*(ay-by))/2);
+		
+		if ((area1+area2+area3) == area)
+		{
+			System.out.println("\tTriangle selected");
+			result = true;
+		}
 		return result;
 	}
 
 }
+
+
+
+
+
+
+

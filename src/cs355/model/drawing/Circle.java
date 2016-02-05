@@ -22,7 +22,7 @@ public class Circle extends Shape {
 
 		// Initialize the superclass.
 		super(color, center, origin);
-
+		this.setShapeType(Shape.type.CIRCLE);
 		// Set the field.
 		this.radius = radius;
 	}

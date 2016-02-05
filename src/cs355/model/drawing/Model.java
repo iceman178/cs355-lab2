@@ -47,6 +47,13 @@ public class Model extends CS355Drawing {
 		shapes.remove(shapes.size() - 1);
 		shapes.add(newShape);
 	}
+	
+	public void updateColor(Color c)
+	{
+		shapes.get(curShapeIndex).setColor(c);		
+	}
+	
+	
 
 	@Override
 	public Shape getShape(int index) {
@@ -61,61 +68,80 @@ public class Model extends CS355Drawing {
 
 	@Override
 	public void deleteShape(int index) {
+		if (index >= shapes.size() || index < 0) {
+			return;
+		}
 		shapes.remove(index);
+		curShapeIndex = -1;
 	}
-
-	
-	
 	
 	// -----------------------Moving---------------------------
 	
 	@Override
 	public void moveToFront(int index) {
-		System.out.println("Model:moveToFront  " + index);
+		if(index >= shapes.size() || index < 0) {
+			return;
+		}
 		
-		
+		Shape curShape = shapes.get(index);
+		shapes.remove(index);
+		shapes.add(curShape);
+		curShapeIndex = shapes.size() - 1;
 	}
 
 	@Override
 	public void movetoBack(int index) {
-		System.out.println("Model:movetoBack  " + index);
+		if(index >= shapes.size() || index < 0) {
+			return;
+		}
 		
+		Shape curShape = shapes.get(index);
+		shapes.remove(index);
+		shapes.add(0, curShape);
+		curShapeIndex = 0;
 	}
 
 	@Override
 	public void moveForward(int index) {
-		System.out.println("Model:moveForward  " + index);
-
+		if(index >= shapes.size() || index < 0) {
+			return;
+		}
 		
+		Shape curShape = shapes.get(index);
+		shapes.remove(index);
+		shapes.add(index + 1, curShape);
+		curShapeIndex = index + 1;
 	}
 
 	@Override
 	public void moveBackward(int index) {
-		System.out.println("Model:moveBackward  " + index);
+		if(index >= shapes.size() || index < 0) {
+			return;
+		}
 		
+		Shape curShape = shapes.get(index);
+		shapes.remove(index);
+		shapes.add(index - 1, curShape);
+		curShapeIndex = index - 1;
 	}
 
-	public void checkIfSelectedShape(Point2D.Double curClick)
+	public int checkIfSelectedShape(Point2D.Double curClick)
 	{
 		boolean result = false;
-		int curIndex = -1;
+		curShapeIndex = -1;
 		
-		for(int a = 0; a < shapes.size(); a++)
+		for(int a = shapes.size() - 1; a >= 0; a--)
 		{
 			result = shapes.get(a).pointInShape(curClick, 0);
 			
 			if (result == true)
 			{
-				curIndex = a;
-				break;
+				return curShapeIndex = a;
 			}
 		}
-		curShapeIndex = curIndex;
+		return curShapeIndex;
 	}
-	
-	
-	
-	
+
 	@Override
 	public List<Shape> getShapes() {
 		return shapes;

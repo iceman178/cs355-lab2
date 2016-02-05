@@ -1,0 +1,27 @@
+[
+  {
+    "a": {
+      "x": 408.0,
+      "y": 429.0
+    },
+    "b": {
+      "x": 369.0,
+      "y": 469.0
+    },
+    "c": {
+      "x": 462.0,
+      "y": 471.0
+    },
+    "color": {
+      "value": -16711936,
+      "falpha": 0.0
+    },
+    "center": {
+      "x": 413.0,
+      "y": 456.3333333333333
+    },
+    "rotation": 0.0,
+    "shapeType": "TRIANGLE",
+    "SHAPE_TYPE": "cs355.model.drawing.Triangle"
+  }
+]

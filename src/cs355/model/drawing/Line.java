@@ -22,7 +22,7 @@ public class Line extends Shape {
 
 		// Initialize the superclass.
 		super(color, start);
-
+		this.setShapeType(Shape.type.LINE);
 		// Set the field.
 		this.end = end;
 	}
