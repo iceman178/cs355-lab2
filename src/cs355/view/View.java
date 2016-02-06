@@ -13,12 +13,12 @@ import java.util.Observable;
 
 import cs355.GUIFunctions;
 import cs355.model.drawing.*;
-import cs355.model.scene.Instance;
 
 public class View implements ViewRefresher {
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(Observable arg0, Object arg1) 
+	{
 		GUIFunctions.refresh();
 	}
 
@@ -34,7 +34,7 @@ public class View implements ViewRefresher {
 			g2d.setColor(currentShape.getColor());
 			
 			AffineTransform objToWorld = new AffineTransform();
-			// translate, rotate and then sets the transform 
+			
 			objToWorld.translate(currentShape.getCenter().getX(), currentShape.getCenter().getY());
 			objToWorld.rotate(currentShape.getRotation());
 			g2d.setTransform(objToWorld);
@@ -43,8 +43,6 @@ public class View implements ViewRefresher {
 			g2d.fill(shapeFactory(currentShape, g2d, false)); 
 			//Uses the factory to determine the current shape to draw the image
 			g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
-			
-			
 		}
 	}
 	
@@ -55,7 +53,6 @@ public class View implements ViewRefresher {
 		if (currentShape.getShapeType() == Shape.type.LINE)
 		{
 			Line line = (Line)currentShape;
-			
 			Point2D.Double start = new Point2D.Double(line.getCenter().x, line.getCenter().y);		
 			Point2D.Double end = new Point2D.Double(line.getEnd().x, line.getEnd().y);
 			
@@ -70,10 +67,7 @@ public class View implements ViewRefresher {
 		}
 		else if (currentShape.getShapeType() == Shape.type.CIRCLE)
 		{
-			Circle circle = (Circle)currentShape;
-						
-			double x = circle.getCenter().getX();
-			double y = circle.getCenter().getY();
+			Circle circle = (Circle)currentShape;			
 			double width = circle.getRadius() * 2;
 			double height = circle.getRadius() * 2;
 			
@@ -89,9 +83,6 @@ public class View implements ViewRefresher {
 		else if (currentShape.getShapeType() == Shape.type.ELLIPSE)
 		{
 			Ellipse ellipse = (Ellipse)currentShape;
-			
-			double x = ellipse.getCenter().getX();
-			double y = ellipse.getCenter().getY();
 			double width = ellipse.getWidth();
 			double height = ellipse.getHeight();
 			
@@ -107,9 +98,6 @@ public class View implements ViewRefresher {
 		else if (currentShape.getShapeType() == Shape.type.RECTANGLE)
 		{
 			Rectangle rectangle = (Rectangle)currentShape;
-			
-			double x = rectangle.getCenter().getX();
-			double y = rectangle.getCenter().getY();
 			double width = rectangle.getWidth();
 			double height = rectangle.getHeight();
 			if(shapeSelected)
@@ -124,8 +112,6 @@ public class View implements ViewRefresher {
 		else if (currentShape.getShapeType() == Shape.type.SQUARE)
 		{
 			Square square = (Square)currentShape;
-			double x = square.getCenter().getX();
-			double y = square.getCenter().getY();
 			double width = square.getSize();
 			double height = square.getSize();
 			if(shapeSelected)
@@ -163,11 +149,17 @@ public class View implements ViewRefresher {
 				g2d.setColor(new Color(204, 0, 204));
 				g2d.draw(tri);
 				if(y[0] <= y[1] && y[0] <= y[2])
+				{
 					g2d.drawOval(x[0]-6, y[0] - 15, 11, 11);
+				}
 				else if(y[1] <= y[0] && y[1] <= y[2])
+				{	
 					g2d.drawOval(x[1]-6, y[1] - 15, 11, 11);
+				}
 				else if(y[2] <= y[1] && y[2] <= y[0])
+				{
 					g2d.drawOval(x[2]-6, y[2] - 15, 11, 11);
+				}
 			}
 			return tri;
 		}

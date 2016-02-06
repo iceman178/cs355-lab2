@@ -18,8 +18,8 @@ public class Line extends Shape {
 	 * @param start the starting point.
 	 * @param end the ending point.
 	 */
-	public Line(Color color, Point2D.Double start, Point2D.Double end) {
-
+	public Line(Color color, Point2D.Double start, Point2D.Double end) 
+	{
 		// Initialize the superclass.
 		super(color, start);
 		this.setShapeType(Shape.type.LINE);
@@ -72,41 +72,30 @@ public class Line extends Shape {
 		
 		if(x0 <= (Math.max(x1, x2) + tolerance) && x0 >= (Math.min(x1, x2)-tolerance) && y0 <= (Math.max(y1, y2)+tolerance) && y0 >= (Math.min(y1, y2)-tolerance))
 		{
-			System.out.println("\tLine selected");
+			//System.out.println("\tLine selected");
 			result = true;
 		}
 		return result;
 	}
 	
-	
-	
-	public boolean pointNearCenter(Point2D.Double pt, double tolerance) {
+	public boolean pointNearCenter(Point2D.Double pt, double tolerance) 
+	{
+		boolean result = false;
 		if(Math.abs(center.getX() - pt.getX()) <= tolerance && Math.abs(center.getY() - pt.getY()) <= tolerance)
-			return true;
-		return false;
+		{
+			result = true;
+		}
+		return result;
 	}
 	
-	public boolean pointNearEnd(Point2D.Double pt, double tolerance) {
+	public boolean pointNearEnd(Point2D.Double pt, double tolerance) 
+	{
+		boolean result = false;
 		if(Math.abs(end.getX() - pt.getX()) <= tolerance && Math.abs(end.getY() - pt.getY()) <= tolerance)
-			return true;
-		return false;
+		{
+			result = true;
+		}	
+		return result;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

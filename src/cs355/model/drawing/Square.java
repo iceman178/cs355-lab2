@@ -60,7 +60,7 @@ public class Square extends Shape {
 		if (((pt.getX() >= center.getX() - boundary) && (pt.getX() <= center.getX() + boundary)) &&
 			((pt.getY() >= center.getY() - boundary) && (pt.getY() <= center.getY() + boundary)) )
 		{
-			System.out.println("\tSquare selected");
+			//System.out.println("\tSquare selected");
 			result = true;
 		}
 		return result;

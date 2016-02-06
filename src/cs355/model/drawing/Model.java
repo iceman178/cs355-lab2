@@ -6,8 +6,6 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 public class Model extends CS355Drawing {
 
@@ -37,11 +35,13 @@ public class Model extends CS355Drawing {
 		curShapeIndex = -1;
 	}
 	
-	public Shape getLastShape() {
+	public Shape getLastShape() 
+	{
 		return shapes.get(shapes.size() - 1);
 	}
 	
-	public void updateLastShape(Shape newShape) {
+	public void updateLastShape(Shape newShape) 
+	{
 		shapes.remove(shapes.size() - 1);
 		shapes.add(newShape);
 	}
@@ -51,25 +51,30 @@ public class Model extends CS355Drawing {
 		shapes.get(curShapeIndex).setColor(c);		
 	}
 	
-	public void updateShapeByIndex(int index, Shape newShape) {
+	public void updateShapeByIndex(int index, Shape newShape) 
+	{
 		shapes.remove(index);
 		shapes.add(index, newShape);
 	}
 
 	@Override
-	public Shape getShape(int index) {
+	public Shape getShape(int index) 
+	{
 		return shapes.get(index);
 	}
 
 	@Override
-	public int addShape(Shape s) {
+	public int addShape(Shape s) 
+	{
 		shapes.add(s);
 		return shapes.size();
 	}
 
 	@Override
-	public void deleteShape(int index) {
-		if (index >= shapes.size() || index < 0) {
+	public void deleteShape(int index) 
+	{
+		if (index >= shapes.size() || index < 0) 
+		{
 			return;
 		}
 		shapes.remove(index);
@@ -80,7 +85,8 @@ public class Model extends CS355Drawing {
 	
 	@Override
 	public void moveToFront(int index) {
-		if(index >= shapes.size() || index < 0) {
+		if(index >= shapes.size() || index < 0) 
+		{
 			return;
 		}
 		
@@ -92,7 +98,8 @@ public class Model extends CS355Drawing {
 
 	@Override
 	public void movetoBack(int index) {
-		if(index >= shapes.size() || index < 0) {
+		if(index >= shapes.size() || index < 0) 
+		{
 			return;
 		}
 		
@@ -104,7 +111,8 @@ public class Model extends CS355Drawing {
 
 	@Override
 	public void moveForward(int index) {
-		if(index >= shapes.size() || index < 0) {
+		if(index >= shapes.size() || index < 0) 
+		{
 			return;
 		}
 		
@@ -116,7 +124,8 @@ public class Model extends CS355Drawing {
 
 	@Override
 	public void moveBackward(int index) {
-		if(index >= shapes.size() || index < 0) {
+		if(index >= shapes.size() || index < 0) 
+		{
 			return;
 		}
 		
@@ -145,7 +154,8 @@ public class Model extends CS355Drawing {
 	
 	public boolean mousePressedInRotHandle (Point2D.Double pt, double tolerance)
 	{
-		if(curShapeIndex == -1) {
+		if(curShapeIndex == -1) 
+		{
 			return false;
 		}
 		
@@ -187,7 +197,7 @@ public class Model extends CS355Drawing {
 			AffineTransform worldToObj = new AffineTransform();
 			worldToObj.rotate(-shape.getRotation());
 			worldToObj.translate(-shape.getCenter().getX(),-shape.getCenter().getY());
-			worldToObj.transform(ptCopy, ptCopy); //transform pt to object coordinates
+			worldToObj.transform(ptCopy, ptCopy); // Transform pt to object coordinates
 			
 			Triangle triangle = (Triangle)shape;
 			double ax = triangle.getA().getX()-triangle.getCenter().getX();
@@ -234,7 +244,6 @@ public class Model extends CS355Drawing {
 	public void setShapes(List<Shape> shapes) {
 		this.shapes = (ArrayList<Shape>) shapes;
 	}
-	
 
 	public static Model get_instance() {
 		return _instance;

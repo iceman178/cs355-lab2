@@ -119,7 +119,7 @@ public class Triangle extends Shape {
 		
 		if ((area1+area2+area3) == area)
 		{
-			System.out.println("\tTriangle selected");
+			//System.out.println("\tTriangle selected");
 			result = true;
 		}
 		return result;

@@ -62,7 +62,7 @@ public class Circle extends Shape {
 		
 		if (distanceFromCenter <= radius)
 		{
-			System.out.println("\tCircle Selected");
+			//System.out.println("\tCircle Selected");
 			result = true;
 		}
 		return result;

@@ -21,12 +21,15 @@ public class Controller implements CS355Controller {
 	private ArrayList<Point2D.Double> trianglePoints = new ArrayList<>();
 	private Mode curControllerMode = Mode.NONE;
 	
-	public enum Mode {
+	public enum Mode 
+	{
 		SHAPE, SELECT, ZOOM_IN, ZOOM_OUT, NONE
 	}
 	
-	private double calcAvg(double coord1, double coord2, double coord3) {
-		return ((coord1 + coord2 + coord3) / 3);
+	private double calcAvg(double num1, double num2, double num3) 
+	{
+		double avg = (num1 + num2 + num3) / 3;
+		return avg;
 	}
 	
 	@Override
@@ -183,13 +186,16 @@ public class Controller implements CS355Controller {
 		}
 		else if(curControllerMode == Mode.SELECT && curShapeIndex != -1)
 		{
-			if(rotating) {
+			if(rotating) 
+			{
 				rotateShape(curShapeIndex, arg0);
 			}
-			else {
-				Shape.type type = Model.instance().getShape(curShapeIndex).getShapeType();
+			else 
+			{
+				Shape.type shapeType = Model.instance().getShape(curShapeIndex).getShapeType();
 				
-				switch(type) {
+				switch(shapeType) 
+				{
 				case LINE:
 					this.handleLineTransformation(arg0);
 					break;
@@ -570,7 +576,7 @@ public class Controller implements CS355Controller {
 	{
 		resetCurMode();
 		curControllerMode = Mode.SELECT;
-		System.out.println("Controller:selectButtonHit");
+		//System.out.println("Controller:selectButtonHit");
 	}
 
 	@Override

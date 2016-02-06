@@ -85,7 +85,7 @@ public class Ellipse extends Shape {
 		
 		if (distanceX + distanceY <= 1)
 		{
-			System.out.println("\tEllipse selected");
+			//System.out.println("\tEllipse selected");
 			result = true;
 		}
 				
