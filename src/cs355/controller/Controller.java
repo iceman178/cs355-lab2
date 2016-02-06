@@ -25,9 +25,9 @@ public class Controller implements CS355Controller {
 		SHAPE, SELECT, ZOOM_IN, ZOOM_OUT, NONE
 	}
 	
-//	private double calculateCenterTriangle(double coord1, double coord2, double coord3) {
-//		return ((coord1 + coord2 + coord3) / 3);
-//	}
+	private double calcAvg(double coord1, double coord2, double coord3) {
+		return ((coord1 + coord2 + coord3) / 3);
+	}
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
@@ -51,21 +51,18 @@ public class Controller implements CS355Controller {
 					Point2D.Double p2 = new Point2D.Double(trianglePoints.get(1).getX(), trianglePoints.get(1).getY());
 					Point2D.Double p3 = new Point2D.Double(trianglePoints.get(2).getX(), trianglePoints.get(2).getY());
 					
-					double centerX = (p1.getX() + p2.getX() + p3.getX()) / 3;
-					double centerY = (p1.getY() + p2.getY() + p3.getY()) / 3;
+					double centerX = calcAvg(p1.getX(), p2.getX(), p3.getX());
+					double centerY = calcAvg(p1.getY(), p2.getY(), p3.getY());
 					
 					Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
 					
-					Triangle triangle = new Triangle(Model.instance().getSelectedColor(),
-													 triCenter, p1, p2, p3);
+					Triangle triangle = new Triangle(Model.instance().getSelectedColor(), triCenter, p1, p2, p3);
 					Model.instance().addShape(triangle);
 					resetCurMode();;
 					GUIFunctions.refresh();
 				}
 			}
 		}
-		
-		
 	}
 	
 	@Override
@@ -133,13 +130,17 @@ public class Controller implements CS355Controller {
 				}
 			}
 		}
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) 
 	{
 		shapeSelected = false;
+		if (curControllerMode == Mode.SELECT && curShapeIndex != -1)
+		{
+			rotating = false;
+			mouseDragStart = null;
+		}
 	}
 
 	@Override
@@ -208,17 +209,42 @@ public class Controller implements CS355Controller {
 				}
 			}
 			GUIFunctions.refresh();
-			
-			
-			
-			
 		}
-		
 	}
 
 	public void handleLineTransformation(MouseEvent arg0) 
 	{
+		Line line = (Line) Model.instance().getShape(curShapeIndex);
 		
+		if(line.pointNearCenter(new Point2D.Double(arg0.getX(), arg0.getY()), 10)) 
+		{
+			line.setCenter(new Point2D.Double(arg0.getX(), arg0.getY()));
+		}
+		else if(line.pointNearEnd(new Point2D.Double(arg0.getX(), arg0.getY()), 10)) 
+		{
+			line.setEnd(new Point2D.Double(arg0.getX(), arg0.getY()));
+		}
+		else 
+		{
+			double changeX = arg0.getX() - mouseDragStart.getX();
+			double changeY = arg0.getY() - mouseDragStart.getY();
+			
+			Point2D.Double center = line.getCenter();
+			Point2D.Double end = line.getEnd();
+
+			double trueCenterX = (center.x + end.x) / 2;
+			double trueCenterY = (center.y + end.y) / 2;
+			
+			double centerXdelta = line.getCenter().getX() - trueCenterX;
+			double endXdelta = line.getEnd().getX() - trueCenterX;
+			double centerYdelta = line.getCenter().getY() - trueCenterY;
+			double endYdelta = line.getEnd().getY() - trueCenterY;
+			
+			
+			line.setCenter(new Point2D.Double(mouseDragStart.x + changeX + centerXdelta, mouseDragStart.y + changeY + centerYdelta));
+			line.setEnd(new Point2D.Double(mouseDragStart.x + changeX + endXdelta, mouseDragStart.y + changeY + endYdelta));
+			Model.instance().updateShapeByIndex(curShapeIndex, line);
+		}
 	}
 
 	public void handleShapeTransformation(MouseEvent arg0) 
@@ -232,8 +258,32 @@ public class Controller implements CS355Controller {
 	
 	public void handleTriangleTransformation(MouseEvent arg0) 
 	{
-		// TODO Auto-generated method stub
+		Triangle triangle = (Triangle) Model.instance().getShape(curShapeIndex);
+		double changeX = arg0.getX() - mouseDragStart.getX();
+		double changeY = arg0.getY() - mouseDragStart.getY();
 		
+		double aXdelta = triangle.getA().x - triangle.getCenter().x;
+		double bXdelta = triangle.getB().x - triangle.getCenter().x;
+		double cXdelta = triangle.getC().x - triangle.getCenter().x;
+		double aYdelta = triangle.getA().y - triangle.getCenter().y;
+		double bYdelta = triangle.getB().y - triangle.getCenter().y;
+		double cYdelta = triangle.getC().y - triangle.getCenter().y;
+		
+		Point2D.Double updatedA = new Point2D.Double(mouseDragStart.x + changeX + aXdelta, mouseDragStart.y + changeY + aYdelta);
+		Point2D.Double updatedB = new Point2D.Double(mouseDragStart.x + changeX + bXdelta, mouseDragStart.y + changeY + bYdelta);
+		Point2D.Double updatedC = new Point2D.Double(mouseDragStart.x + changeX + cXdelta, mouseDragStart.y + changeY + cYdelta);
+
+		triangle.setA(updatedA);
+		triangle.setB(updatedB);
+		triangle.setC(updatedC);
+		
+		double centerX = calcAvg(triangle.getA().getX(), triangle.getB().getX(), triangle.getC().getX());
+		double centerY = calcAvg(triangle.getA().getY(), triangle.getB().getY(), triangle.getC().getY());
+		
+		Point2D.Double triCenter = new Point2D.Double(centerX, centerY);
+		triangle.setCenter(triCenter);
+		
+		Model.instance().updateShapeByIndex(curShapeIndex, triangle);
 	}
 
 	public void rotateShape(int shapeIndex, MouseEvent arg0)
@@ -242,6 +292,7 @@ public class Controller implements CS355Controller {
 		double deltaX = shape.getCenter().getX() - arg0.getX();
 		double deltaY = shape.getCenter().getY() - arg0.getY();
 		double angle = Math.atan2(deltaY, deltaX) - Math.PI / 2;
+		
 		shape.setRotation(angle % (2*Math.PI));
 		GUIFunctions.refresh();
 	}
@@ -267,32 +318,30 @@ public class Controller implements CS355Controller {
 		// Left side of origin point
 		if (curMousePos.getX() < circle.getOrigin().getX())
 		{
+			double x = circle.getOrigin().getX() - side_length/2;
 			// Above origin point
 			if (curMousePos.getY() < circle.getOrigin().getY())
 			{
-				double x = circle.getOrigin().getX() - side_length/2;
 				double y = circle.getOrigin().getY() - side_length/2;
 				circle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = circle.getOrigin().getX() - side_length/2;
 				double y = circle.getOrigin().getY() + side_length/2;
 				circle.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
+			double x = circle.getOrigin().getX() + side_length/2;
 			// Above origin point
 			if (curMousePos.getY() < circle.getOrigin().getY())
 			{
-				double x = circle.getOrigin().getX() + side_length/2;
 				double y = circle.getOrigin().getY() - side_length/2;
 				circle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = circle.getOrigin().getX() + side_length/2;
 				double y = circle.getOrigin().getY() + side_length/2;
 				circle.setCenter(new Point2D.Double(x, y));
 			}
@@ -309,38 +358,36 @@ public class Controller implements CS355Controller {
 		double width = Math.abs(ellipse.getOrigin().getX() - curMousePos.getX());
 		double height = Math.abs(ellipse.getOrigin().getY() - curMousePos.getY());
 		
-		ellipse.setWidth(width/2);
-		ellipse.setHeight(height/2);
+		ellipse.setWidth(width);
+		ellipse.setHeight(height);
 		
 		// Left side of origin point
 		if (curMousePos.getX() < ellipse.getOrigin().getX())
 		{
+			double x = ellipse.getOrigin().getX() - width/2;
 			// Above origin point
 			if (curMousePos.getY() < ellipse.getOrigin().getY())
 			{
-				double x = ellipse.getOrigin().getX() - width/2;
 				double y = ellipse.getOrigin().getY() - height/2;
 				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = ellipse.getOrigin().getX() - width/2;
 				double y = ellipse.getOrigin().getY() + height/2;
 				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
+			double x = ellipse.getOrigin().getX() + width/2;
 			// Above origin point
 			if (curMousePos.getY() < ellipse.getOrigin().getY())
 			{
-				double x = ellipse.getOrigin().getX() + width/2;
 				double y = ellipse.getOrigin().getY() - height/2;
 				ellipse.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = ellipse.getOrigin().getX() + width/2;
 				double y = ellipse.getOrigin().getY() + height/2;
 				ellipse.setCenter(new Point2D.Double(x, y));
 			}
@@ -363,32 +410,30 @@ public class Controller implements CS355Controller {
 		// Left side of origin point
 		if (curMousePos.getX() < rectangle.getOrigin().getX())
 		{
+			double x = rectangle.getOrigin().getX() - width/2;
 			// Above origin point
 			if (curMousePos.getY() < rectangle.getOrigin().getY())
 			{
-				double x = rectangle.getOrigin().getX() - width/2;
 				double y = rectangle.getOrigin().getY() - height/2;
 				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = rectangle.getOrigin().getX() - width/2;
 				double y = rectangle.getOrigin().getY() + height/2;
 				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 		}
 		else // Right side of origin point
 		{
+			double x = rectangle.getOrigin().getX() + width/2;
 			// Above origin point
 			if (curMousePos.getY() < rectangle.getOrigin().getY())
 			{
-				double x = rectangle.getOrigin().getX() + width/2;
 				double y = rectangle.getOrigin().getY() - height/2;
 				rectangle.setCenter(new Point2D.Double(x, y));
 			}
 			else // Below origin point
 			{
-				double x = rectangle.getOrigin().getX() + width/2;
 				double y = rectangle.getOrigin().getY() + height/2;
 				rectangle.setCenter(new Point2D.Double(x, y));
 			}
@@ -462,6 +507,8 @@ public class Controller implements CS355Controller {
 		if (curControllerMode == Mode.SELECT)
 		{
 			Model.instance().updateColor(c);
+			Model.instance().setSelectedColor(c);
+			GUIFunctions.changeSelectedColor(c);
 		}
 		else
 		{
@@ -511,7 +558,6 @@ public class Controller implements CS355Controller {
 		curControllerMode = Mode.SHAPE;
 	}
 
-	@Override
 	public void triangleButtonHit() 
 	{
 		resetCurMode();;
@@ -667,7 +713,6 @@ public class Controller implements CS355Controller {
 	
 	@Override
 	public void doChangeBrightness(int brightnessAmountNum) {}
-	
 	
 	//------------------------GETTERS AND SETTERS---------------------------
 	

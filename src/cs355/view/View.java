@@ -6,6 +6,7 @@ import java.awt.Polygon;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -32,11 +33,17 @@ public class View implements ViewRefresher {
 			Shape currentShape = shapes.get(a);
 			g2d.setColor(currentShape.getColor());
 			
+			AffineTransform objToWorld = new AffineTransform();
+			// translate, rotate and then sets the transform 
+			objToWorld.translate(currentShape.getCenter().getX(), currentShape.getCenter().getY());
+			objToWorld.rotate(currentShape.getRotation());
+			g2d.setTransform(objToWorld);
+			
 			//Uses the factory to determine the current shape to set the fill
 			g2d.fill(shapeFactory(currentShape, g2d, false)); 
 			//Uses the factory to determine the current shape to draw the image
-			
 			g2d.draw(shapeFactory(currentShape, g2d, curShapeIndex == a)); 
+			
 			
 		}
 	}
@@ -55,11 +62,11 @@ public class View implements ViewRefresher {
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-				g2d.drawOval((int)start.getX(), (int)start.getY(), 10, 10);
-				g2d.drawOval((int)end.getX(), (int)end.getY(), 10, 10);
+				g2d.drawOval(-6, -6, 11, 11); //center
+				g2d.drawOval((int)(line.getEnd().getX()-line.getCenter().getX())-6, (int)(line.getEnd().getY()-line.getCenter().getY())-6, 11, 11);
 				g2d.setColor(line.getColor());
 			}
-			return new Line2D.Double(start.x, start.y, end.x, end.y);
+			return new Line2D.Double(0, 0, end.x - start.x, end.y - start.y);
 		}
 		else if (currentShape.getShapeType() == Shape.type.CIRCLE)
 		{
@@ -73,11 +80,11 @@ public class View implements ViewRefresher {
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
-				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.drawRect((int)(-(width/2))-1, (int)(-(height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval(-6, (int)-width/2 - 15, 11, 11);
 				g2d.setColor(circle.getColor());
 			}
-			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
+			return new Ellipse2D.Double(-(width/2), -(height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.ELLIPSE)
 		{
@@ -85,17 +92,17 @@ public class View implements ViewRefresher {
 			
 			double x = ellipse.getCenter().getX();
 			double y = ellipse.getCenter().getY();
-			double width = ellipse.getWidth() * 2;
-			double height = ellipse.getHeight() * 2;
+			double width = ellipse.getWidth();
+			double height = ellipse.getHeight();
 			
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
-				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.drawRect((int)(-(width/2))-1, (int)(-(height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval(-6, (int)(-height/2 - 15), 11, 11);
 				g2d.setColor(ellipse.getColor());
 			}
-			return new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
+			return new Ellipse2D.Double(-(width/2), -(height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.RECTANGLE)
 		{
@@ -108,11 +115,11 @@ public class View implements ViewRefresher {
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
-				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.drawRect((int)(-(width/2))-1, (int)(-(height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval(-6, (int)(-height/2 - 15), 11, 11);
 				g2d.setColor(rectangle.getColor());
 			}
-			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
+			return new Rectangle2D.Double(-(width/2), -(height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.SQUARE)
 		{
@@ -124,11 +131,11 @@ public class View implements ViewRefresher {
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-				g2d.drawRect((int)(x - (width/2))-1, (int)(y - (height/2))-1, (int)width+2, (int)height+2);
-				g2d.drawOval((int)(x-5), (int)(y - (height/2) - 15), 10, 10);
+				g2d.drawRect((int)(-(width/2))-1, (int)(-(height/2))-1, (int)width+2, (int)height+2);
+				g2d.drawOval(-6, (int)-height/2 - 15, 11, 11);
 				g2d.setColor(square.getColor());
 			}
-			return new Rectangle2D.Double(x - (width/2), y - (height/2), width, height);
+			return new Rectangle2D.Double(-(width/2), -(height/2), width, height);
 		}
 		else if (currentShape.getShapeType() == Shape.type.TRIANGLE)
 		{
@@ -137,13 +144,13 @@ public class View implements ViewRefresher {
 			int[] x = new int[3];
 			int[] y = new int[3];
 			
-			x[0] = (int) (triangle.getA().x);// - triangle.getCenter().x);
-			x[1] = (int) (triangle.getB().x);// - triangle.getCenter().x);
-			x[2] = (int) (triangle.getC().x);// - triangle.getCenter().x);
+			x[0] = (int) (triangle.getA().x - triangle.getCenter().x);
+			x[1] = (int) (triangle.getB().x - triangle.getCenter().x);
+			x[2] = (int) (triangle.getC().x - triangle.getCenter().x);
 			
-			y[0] = (int) (triangle.getA().y);// - triangle.getCenter().y);
-			y[1] = (int) (triangle.getB().y);// - triangle.getCenter().y);
-			y[2] = (int) (triangle.getC().y);// - triangle.getCenter().y);
+			y[0] = (int) (triangle.getA().y - triangle.getCenter().y);
+			y[1] = (int) (triangle.getB().y - triangle.getCenter().y);
+			y[2] = (int) (triangle.getC().y - triangle.getCenter().y);
 			
 			Polygon tri = new Polygon();
 			
@@ -154,8 +161,6 @@ public class View implements ViewRefresher {
 			if(shapeSelected)
 			{
 				g2d.setColor(new Color(204, 0, 204));
-//				g2d.drawOval((int)(x[0] - 5), (int)y[0] - 15, 10, 10);
-//				g2d.setColor(triangle.getColor());
 				g2d.draw(tri);
 				if(y[0] <= y[1] && y[0] <= y[2])
 					g2d.drawOval(x[0]-6, y[0] - 15, 11, 11);

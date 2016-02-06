@@ -179,7 +179,7 @@ public class Model extends CS355Drawing {
 			double yDiff = ptCopy.getY()+((height/2) + 9);
 			
 			double distance = Math.sqrt(Math.pow(ptCopy.getX(), 2) + Math.pow(yDiff, 2));
-			return (distance <= 6);
+			return (6>=distance);
 		}
 		if(shape.getShapeType().equals(Shape.type.TRIANGLE))
 		{
